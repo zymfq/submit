@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zym.submit.mapper.TaskNoticeExtMapper">
+    <resultMap id="BaseResultMap" type="com.zym.submit.entity.TaskNotice">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="task_id" jdbcType="INTEGER" property="taskId"/>
+        <result column="term_id" jdbcType="INTEGER" property="termId"/>
+        <result column="class_id" jdbcType="INTEGER" property="classId"/>
+        <result column="task_name" jdbcType="VARCHAR" property="taskName"/>
+        <result column="course_id" jdbcType="INTEGER" property="courseId"/>
+        <result column="teacher_number" jdbcType="VARCHAR" property="teacherNumber"/>
+        <result column="task_path" jdbcType="VARCHAR" property="taskPath"/>
+        <result column="is_valid" jdbcType="TINYINT" property="isValid"/>
+        <result column="submit_deadline" jdbcType="DATE" property="submitDeadline"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, task_id, term_id, class_id, task_name, course_id, teacher_number, task_path,
+        is_valid, submit_deadline, create_time, update_time
+   </sql>
+    <select id="selectByTaskId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from task_notice
+        where task_id = #{taskId,jdbcType=INTEGER}
+    </select>
+</mapper>

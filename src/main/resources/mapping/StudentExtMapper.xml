@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zym.submit.mapper.StudentExtMapper">
+    <resultMap id="BaseResultMap" type="com.zym.submit.entity.Student">
+        <id column="student_id" jdbcType="INTEGER" property="studentId"/>
+        <result column="student_number" jdbcType="VARCHAR" property="studentNumber"/>
+        <result column="student_name" jdbcType="VARCHAR" property="studentName"/>
+        <result column="student_password" jdbcType="VARCHAR" property="studentPassword"/>
+        <result column="student_sex" jdbcType="TINYINT" property="studentSex"/>
+        <result column="class_id" jdbcType="INTEGER" property="classId"/>
+        <result column="is_valid" jdbcType="TINYINT" property="isValid"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    student_id, student_number, student_name, student_password, student_sex, class_id,
+    is_valid, create_time, update_time
+    </sql>
+
+    <select id="selectByStudentNumber" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from student
+        where student_number = #{studentNumber,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

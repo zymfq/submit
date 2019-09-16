@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zym.submit.mapper.ReportExtMapper">
+    <resultMap id="BaseResultMap4" type="com.zym.submit.dto.ReportDTO">
+        <result property="termId" column="term_id"></result>
+        <result property="studyYear" column="study_year"></result>
+        <result property="termName" column="term_name"></result>
+        <result property="taskId" column="task_id"></result>
+        <result property="courseId" column="course_id"></result>
+        <result property="studentNumber" column="student_number"></result>
+        <result property="taskGrade" column="task_grade"></result>
+        <result property="reportName" column="report_name"></result>
+        <result property="reportCorrect" column="report_correct"></result>
+        <result property="reportPath" column="report_path"></result>
+    </resultMap>
+
+    <resultMap id="TaskMap" type="com.zym.submit.entity.TaskNotice">
+        <result property="taskId" column="task_id"></result>
+        <result property="taskName" column="task_name"></result>
+    </resultMap>
+
+    <select id="selectByCourseId"  resultMap="BaseResultMap4">
+    SELECT t.term_id,t.study_year,t.term_name,tn.task_id,tn.course_id,
+      r.student_number,r.task_grade,r.report_name,r.report_correct,
+      r.report_path FROM term t,task_notice tn,report r WHERE
+      tn.task_id = r.task_id and t.term_id = #{termId,jdbcType=INTEGER}
+      and course_id = #{courseId,jdbcType=INTEGER}
+  </select>
+
+    <select id="selectNotSubmit" resultMap="TaskMap">
+        select task_id,task_name from task_notice left join
+        (select task_id as i from report) as t1 on task_notice.task_id = t1.i WHERE
+        t1.i is null and task_notice.course_id = #{courseId,jdbcType=INTEGER} and term_id = #{termId,jdbcType=INTEGER}
+    </select>
+
+
+</mapper>
