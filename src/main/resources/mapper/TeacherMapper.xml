@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhy.submit.teacher.mapper.TeacherMapper">
+  <resultMap id="BaseResultMap" type="com.zhy.submit.teacher.entity.Teacher">
+    <id column="teacher_id" jdbcType="INTEGER" property="teacherId" />
+    <result column="teacher_number" jdbcType="VARCHAR" property="teacherNumber" />
+    <result column="teacher_name" jdbcType="VARCHAR" property="teacherName" />
+    <result column="teacher_password" jdbcType="VARCHAR" property="teacherPassword" />
+    <result column="teacher_sex" jdbcType="TINYINT" property="teacherSex" />
+    <result column="identity" jdbcType="TINYINT" property="identity" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <resultMap id="resultMap1" type="com.zhy.submit.teacher.dto.TeacherDTO">
+    <result column="teacher_number" property="teacherNumber"/>
+    <result column="teacher_password" property="teacherPassword"/>
+    <result column="teacher_name" property="teacherName"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    teacher_id, teacher_number, teacher_name, teacher_password, teacher_sex, identity, 
+    is_valid, create_time, update_time
+  </sql>
+  <select id="TeacherLogin" parameterType="java.lang.String" resultMap="resultMap1">
+    select 
+    teacher_number,teacher_name
+    from teacher
+    where teacher_number = #{teacher_number} and teacher_password=#{teacher_password}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from teacher
+    where teacher_id = #{teacherId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhy.submit.teacher.entity.Teacher">
+    insert into teacher (teacher_id, teacher_number, teacher_name, 
+      teacher_password, teacher_sex, identity, 
+      is_valid, create_time, update_time
+      )
+    values (#{teacherId,jdbcType=INTEGER}, #{teacherNumber,jdbcType=VARCHAR}, #{teacherName,jdbcType=VARCHAR}, 
+      #{teacherPassword,jdbcType=VARCHAR}, #{teacherSex,jdbcType=TINYINT}, #{identity,jdbcType=TINYINT}, 
+      #{isValid,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zhy.submit.teacher.dto.TeacherDTO">
+    insert into teacher
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="teacherId != null">
+        teacher_id,
+      </if>
+      <if test="teacherNumber != null">
+        teacher_number,
+      </if>
+      <if test="teacherName != null">
+        teacher_name,
+      </if>
+      <if test="teacherPassword != null">
+        teacher_password,
+      </if>
+      <if test="teacherSex != null">
+        teacher_sex,
+      </if>
+      <if test="identity != null">
+        identity,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="teacherId != null">
+        #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherNumber != null">
+        #{teacherNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherName != null">
+        #{teacherName,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherPassword != null">
+        #{teacherPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherSex != null">
+        #{teacherSex,jdbcType=TINYINT},
+      </if>
+      <if test="identity != null">
+        #{identity,jdbcType=TINYINT},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhy.submit.teacher.entity.Teacher">
+    update teacher
+    <set>
+      <if test="teacherNumber != null">
+        teacher_number = #{teacherNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherName != null">
+        teacher_name = #{teacherName,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherPassword != null">
+        teacher_password = #{teacherPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherSex != null">
+        teacher_sex = #{teacherSex,jdbcType=TINYINT},
+      </if>
+      <if test="identity != null">
+        identity = #{identity,jdbcType=TINYINT},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where teacher_id = #{teacherId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhy.submit.teacher.entity.Teacher">
+    update teacher
+    set teacher_number = #{teacherNumber,jdbcType=VARCHAR},
+      teacher_name = #{teacherName,jdbcType=VARCHAR},
+      teacher_password = #{teacherPassword,jdbcType=VARCHAR},
+      teacher_sex = #{teacherSex,jdbcType=TINYINT},
+      identity = #{identity,jdbcType=TINYINT},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where teacher_id = #{teacherId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhy.submit.teacher.mapper.StudentMapper">
+  <resultMap id="BaseResultMap" type="com.zhy.submit.teacher.entity.Student">
+    <id column="student_id" jdbcType="INTEGER" property="studentId" />
+    <result column="student_number" jdbcType="VARCHAR" property="studentNumber" />
+    <result column="student_name" jdbcType="VARCHAR" property="studentName" />
+    <result column="student_password" jdbcType="VARCHAR" property="studentPassword" />
+    <result column="student_sex" jdbcType="TINYINT" property="studentSex" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    student_id, student_number, student_name, student_password, student_sex, class_id, 
+    is_valid, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from student
+    where student_id = #{studentId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from student
+    where student_id = #{studentId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhy.submit.teacher.entity.Student">
+    insert into student (student_id, student_number, student_name, 
+      student_password, student_sex, class_id, 
+      is_valid, create_time, update_time
+      )
+    values (#{studentId,jdbcType=INTEGER}, #{studentNumber,jdbcType=VARCHAR}, #{studentName,jdbcType=VARCHAR}, 
+      #{studentPassword,jdbcType=VARCHAR}, #{studentSex,jdbcType=TINYINT}, #{classId,jdbcType=INTEGER}, 
+      #{isValid,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <select id="unsubmitStudentInfo" resultType="com.zhy.submit.teacher.dto.StudentSubmissionDTO">
+    select student_number as studentNumber,student_name  as studentName from
+student
+where student_number not in
+(
+select student_number from report
+where task_id=#{taskId} and class_id in
+(
+
+select class.class_id from class
+where
+class.class_name=#{className}
+and
+grade_id in (select grade_id from grade where grade_name=#{gradeName})
+)
+)
+and class_id=
+(
+select class_id from class
+where
+class_name=#{className}
+and
+grade_id in (select grade_id from grade where grade_name=#{gradeName})
+)
+  </select>
+  <select id="SubmittedStudentInfo" resultType="com.zhy.submit.teacher.dto.StudentSubmissionDTO">
+    select student.student_number as studentNumber,student.student_name as studentName,report.report_path as reportPath from
+student LEFT JOIN report ON student.student_number=report.student_number
+where student.student_number in
+(
+select student_number from report
+where task_id=#{taskId} and student.class_id in
+(
+
+select class.class_id from class
+where
+class.class_name=#{className}
+and
+grade_id in (select grade_id from grade where grade_name=#{gradeName})
+)
+)
+</select>
+
+  <select id="totalStudentNumber" resultType="java.lang.Integer">
+    select count(*)
+from student
+where class_id in
+(
+
+select class.class_id from class
+where
+class.class_name=#{className}
+and
+grade_id in (select grade_id from grade where grade_name=#{gradeName})
+)
+
+  </select>
+  <select id="personalScoreDetail" resultType="com.zhy.submit.teacher.dto.StudentSubmissionDTO">
+    select student.student_number as studentNumber,student.student_name studentName,report.task_grade as studentScore from
+student LEFT JOIN report ON student.student_number=report.student_number
+where student.student_number in
+(
+select student_number from report
+where task_id=#{taskId} and class_id in
+(
+
+select class.class_id from class
+where
+class.class_name=#{className}
+and
+grade_id in (select grade_id from grade where grade_name=#{gradeName})
+)
+)
+  </select>
+  <insert id="insertSelective" parameterType="com.zhy.submit.teacher.entity.Student">
+    insert into student
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="studentId != null">
+        student_id,
+      </if>
+      <if test="studentNumber != null">
+        student_number,
+      </if>
+      <if test="studentName != null">
+        student_name,
+      </if>
+      <if test="studentPassword != null">
+        student_password,
+      </if>
+      <if test="studentSex != null">
+        student_sex,
+      </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="studentId != null">
+        #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="studentNumber != null">
+        #{studentNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="studentName != null">
+        #{studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="studentPassword != null">
+        #{studentPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="studentSex != null">
+        #{studentSex,jdbcType=TINYINT},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhy.submit.teacher.entity.Student">
+    update student
+    <set>
+      <if test="studentNumber != null">
+        student_number = #{studentNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="studentName != null">
+        student_name = #{studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="studentPassword != null">
+        student_password = #{studentPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="studentSex != null">
+        student_sex = #{studentSex,jdbcType=TINYINT},
+      </if>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where student_id = #{studentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhy.submit.teacher.entity.Student">
+    update student
+    set student_number = #{studentNumber,jdbcType=VARCHAR},
+      student_name = #{studentName,jdbcType=VARCHAR},
+      student_password = #{studentPassword,jdbcType=VARCHAR},
+      student_sex = #{studentSex,jdbcType=TINYINT},
+      class_id = #{classId,jdbcType=INTEGER},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where student_id = #{studentId,jdbcType=INTEGER}
+  </update>
+</mapper>

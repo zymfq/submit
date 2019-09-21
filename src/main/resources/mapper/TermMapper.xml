@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhy.submit.teacher.mapper.TermMapper">
+  <resultMap id="BaseResultMap" type="com.zhy.submit.teacher.entity.Term">
+    <id column="term_id" jdbcType="INTEGER" property="termId" />
+    <result column="study_year" jdbcType="VARCHAR" property="studyYear" />
+    <result column="term_name" jdbcType="TINYINT" property="termName" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="grade_id" jdbcType="INTEGER" property="gradeId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    term_id, study_year, term_name, is_valid, create_time, update_time, grade_id
+  </sql>
+  <select id="selectTermIdByForm"  resultType="java.lang.Integer">
+    select term_id from term
+where study_year=#{schoolYear} and term_name=#{termName}
+and grade_id in (select grade_id from grade where grade_name=#{gradeName})
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from term
+    where term_id = #{termId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhy.submit.teacher.entity.Term">
+    insert into term (term_id, study_year, term_name, 
+      is_valid, create_time, update_time, 
+      grade_id)
+    values (#{termId,jdbcType=INTEGER}, #{studyYear,jdbcType=VARCHAR}, #{termName,jdbcType=TINYINT}, 
+      #{isValid,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{gradeId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zhy.submit.teacher.entity.Term">
+    insert into term
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="termId != null">
+        term_id,
+      </if>
+      <if test="studyYear != null">
+        study_year,
+      </if>
+      <if test="termName != null">
+        term_name,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="gradeId != null">
+        grade_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="termId != null">
+        #{termId,jdbcType=INTEGER},
+      </if>
+      <if test="studyYear != null">
+        #{studyYear,jdbcType=VARCHAR},
+      </if>
+      <if test="termName != null">
+        #{termName,jdbcType=TINYINT},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gradeId != null">
+        #{gradeId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhy.submit.teacher.entity.Term">
+    update term
+    <set>
+      <if test="studyYear != null">
+        study_year = #{studyYear,jdbcType=VARCHAR},
+      </if>
+      <if test="termName != null">
+        term_name = #{termName,jdbcType=TINYINT},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gradeId != null">
+        grade_id = #{gradeId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where term_id = #{termId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhy.submit.teacher.entity.Term">
+    update term
+    set study_year = #{studyYear,jdbcType=VARCHAR},
+      term_name = #{termName,jdbcType=TINYINT},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      grade_id = #{gradeId,jdbcType=INTEGER}
+    where term_id = #{termId,jdbcType=INTEGER}
+  </update>
+</mapper>

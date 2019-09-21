@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhy.submit.teacher.mapper.taskNoticeMapper">
+  <resultMap id="BaseResultMap" type="com.zhy.submit.teacher.entity.taskNotice">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="task_id" jdbcType="INTEGER" property="taskId" />
+    <result column="term_id" jdbcType="INTEGER" property="termId" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+    <result column="course_id" jdbcType="INTEGER" property="courseId" />
+    <result column="teacher_number" jdbcType="VARCHAR" property="teacherNumber" />
+    <result column="task_path" jdbcType="VARCHAR" property="taskPath" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="submit_deadline" jdbcType="DATE" property="submitDeadline" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <select id="showTaskNotice" resultType="com.zhy.submit.teacher.dto.showReportDTO">
+    select term.study_year as schoolYear,term.term_name as termName,
+       grade.grade_name as grade,
+       class.class_name as schoolClass,
+       course.course_name as course,
+       task_notice.task_id as taskId,task_notice.task_name as experimentName,task_notice.submit_deadline as submitDeadline,task_notice.create_time as createTime from
+task_notice LEFT JOIN term ON task_notice.term_id=term.term_id
+LEFT JOIN grade ON grade.grade_id=term.grade_id
+LEFT JOIN class ON task_notice.class_id=class.class_id
+LEFT JOIN course ON task_notice.course_id=course.course_id
+where task_notice.teacher_number=#{teacherNumber}
+  </select>
+  <insert id="addTaskNotice" parameterType="com.zhy.submit.teacher.dto.addReportDTO"  >
+    insert into task_notice (task_id,term_id,class_id,teacher_number,task_name,course_id,task_path,submit_deadline)values( #{taskId},#{termId},#{classId},#{teacherNumber},#{experimentName},#{courseId},#{taskPath},#{submitDeadline})
+  </insert>
+<delete id="deleteReport" >
+  delete from task_notice where teacher_number=#{teacherNumber} and task_name=#{experimentName}
+</delete>
+  <insert id="insertSelective" parameterType="com.zhy.submit.teacher.entity.taskNotice">
+    insert into task_notice
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="taskId != null">
+        task_id,
+      </if>
+      <if test="termId != null">
+        term_id,
+      </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="taskName != null">
+        task_name,
+      </if>
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="teacherNumber != null">
+        teacher_number,
+      </if>
+      <if test="taskPath != null">
+        task_path,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="submitDeadline != null">
+        submit_deadline,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="taskId != null">
+        #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="termId != null">
+        #{termId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="taskName != null">
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherNumber != null">
+        #{teacherNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="taskPath != null">
+        #{taskPath,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="submitDeadline != null">
+        #{submitDeadline,jdbcType=DATE},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhy.submit.teacher.entity.taskNotice">
+    update task_notice
+    <set>
+      <if test="taskId != null">
+        task_id = #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="termId != null">
+        term_id = #{termId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="taskName != null">
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null">
+        course_id = #{courseId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherNumber != null">
+        teacher_number = #{teacherNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="taskPath != null">
+        task_path = #{taskPath,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="submitDeadline != null">
+        submit_deadline = #{submitDeadline,jdbcType=DATE},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhy.submit.teacher.entity.taskNotice">
+    update task_notice
+    set task_id = #{taskId,jdbcType=INTEGER},
+      term_id = #{termId,jdbcType=INTEGER},
+      class_id = #{classId,jdbcType=INTEGER},
+      task_name = #{taskName,jdbcType=VARCHAR},
+      course_id = #{courseId,jdbcType=INTEGER},
+      teacher_number = #{teacherNumber,jdbcType=VARCHAR},
+      task_path = #{taskPath,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      submit_deadline = #{submitDeadline,jdbcType=DATE},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

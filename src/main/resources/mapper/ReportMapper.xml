@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhy.submit.teacher.mapper.ReportMapper">
+  <resultMap id="BaseResultMap" type="com.zhy.submit.teacher.entity.Report">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="task_id" jdbcType="INTEGER" property="taskId" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="student_number" jdbcType="VARCHAR" property="studentNumber" />
+    <result column="report_name" jdbcType="VARCHAR" property="reportName" />
+    <result column="report_path" jdbcType="VARCHAR" property="reportPath" />
+    <result column="report_correct" jdbcType="TINYINT" property="reportCorrect" />
+    <result column="task_grade" jdbcType="DOUBLE" property="taskGrade" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, task_id, class_id, student_number, report_name, report_path, report_correct, 
+    task_grade, is_valid, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from report
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from report
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhy.submit.teacher.entity.Report">
+    insert into report (id, task_id, class_id, 
+      student_number, report_name, report_path, 
+      report_correct, task_grade, is_valid, 
+      create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{taskId,jdbcType=INTEGER}, #{classId,jdbcType=INTEGER}, 
+      #{studentNumber,jdbcType=VARCHAR}, #{reportName,jdbcType=VARCHAR}, #{reportPath,jdbcType=VARCHAR}, 
+      #{reportCorrect,jdbcType=TINYINT}, #{taskGrade,jdbcType=DOUBLE}, #{isValid,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="addScore">
+    update report set task_grade=#{score}
+where student_number=#{studentNumber} and task_id=#{taskId}
+  </insert>
+  <select id="classAverageScore" resultType="java.lang.Double">
+    select  avg(task_grade)from report
+where task_id=#{taskId} and class_id=
+(
+select class.class_id from class
+where
+class.class_name=#{className}
+and
+grade_id in (select grade_id from grade where grade_name=#{gradeName})
+)
+  </select>
+  <insert id="insertSelective" parameterType="com.zhy.submit.teacher.entity.Report">
+    insert into report
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="taskId != null">
+        task_id,
+      </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="studentNumber != null">
+        student_number,
+      </if>
+      <if test="reportName != null">
+        report_name,
+      </if>
+      <if test="reportPath != null">
+        report_path,
+      </if>
+      <if test="reportCorrect != null">
+        report_correct,
+      </if>
+      <if test="taskGrade != null">
+        task_grade,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="taskId != null">
+        #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="studentNumber != null">
+        #{studentNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="reportName != null">
+        #{reportName,jdbcType=VARCHAR},
+      </if>
+      <if test="reportPath != null">
+        #{reportPath,jdbcType=VARCHAR},
+      </if>
+      <if test="reportCorrect != null">
+        #{reportCorrect,jdbcType=TINYINT},
+      </if>
+      <if test="taskGrade != null">
+        #{taskGrade,jdbcType=DOUBLE},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhy.submit.teacher.entity.Report">
+    update report
+    <set>
+      <if test="taskId != null">
+        task_id = #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="studentNumber != null">
+        student_number = #{studentNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="reportName != null">
+        report_name = #{reportName,jdbcType=VARCHAR},
+      </if>
+      <if test="reportPath != null">
+        report_path = #{reportPath,jdbcType=VARCHAR},
+      </if>
+      <if test="reportCorrect != null">
+        report_correct = #{reportCorrect,jdbcType=TINYINT},
+      </if>
+      <if test="taskGrade != null">
+        task_grade = #{taskGrade,jdbcType=DOUBLE},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhy.submit.teacher.entity.Report">
+    update report
+    set task_id = #{taskId,jdbcType=INTEGER},
+      class_id = #{classId,jdbcType=INTEGER},
+      student_number = #{studentNumber,jdbcType=VARCHAR},
+      report_name = #{reportName,jdbcType=VARCHAR},
+      report_path = #{reportPath,jdbcType=VARCHAR},
+      report_correct = #{reportCorrect,jdbcType=TINYINT},
+      task_grade = #{taskGrade,jdbcType=DOUBLE},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
