@@ -13,7 +13,7 @@ import java.util.PrimitiveIterator;
 @Transactional
 public interface scoreDetailService {
     //班级平均分
-    public List<showReportDTO> AverageScore(String teacherNumber);
+    public List<showReportDTO> AverageScore(String teacherNumber, int currPage, int pageSize);
 
     //班级学生成绩详情
     public List<StudentSubmissionDTO> ScoreDetail(String taskId,String className,String gradeName);

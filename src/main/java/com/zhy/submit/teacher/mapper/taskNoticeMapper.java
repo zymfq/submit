@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Repository
@@ -15,7 +16,7 @@ public interface taskNoticeMapper {
     //添加实验报告
     Integer addTaskNotice(addReportDTO addDTO);
     //查询所有实验报告
-    List<showReportDTO> showTaskNotice(String teacherNumber);
+    List<showReportDTO> showTaskNotice(Map<String,Object> data);
     //删除实验报告
     Integer deleteReport(String teacherNumber,String experimentName);
     int deleteByPrimaryKey(Integer id);

@@ -21,8 +21,8 @@ public class MarkController {
 
     //show班级平均分
     @GetMapping("/average")
-    public ResultVO average(@RequestParam("teacherNumber") String teacherNumber){
-        List<showReportDTO> list= scoreDetailService.AverageScore(teacherNumber);
+    public ResultVO average(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
+        List<showReportDTO> list= scoreDetailService.AverageScore(teacherNumber,currPage,pageSize);
         ResultVO res= ResultVOUtils.success(list);
         return  res;
     }

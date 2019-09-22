@@ -63,8 +63,8 @@ public class addReportController {
    }
    //显示所有添加的实验报告
     @GetMapping("/showAddReport")
-    public ResultVO show(@RequestParam("teacherNumber") String teacherNumber){
-        List<showReportDTO> showReportDTOList=addReportService.view(teacherNumber);
+    public ResultVO show(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
+        List<showReportDTO> showReportDTOList=addReportService.view(teacherNumber,currPage,pageSize);
         ResultVO resultVO= ResultVOUtils.success(showReportDTOList);
         return  resultVO;
     }

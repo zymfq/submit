@@ -31,7 +31,7 @@ public interface addReportService {
     //添加实验报告信息
     public Integer add(addReportDTO addDTO);
     //展示教师发布的所有实验
-    public List<showReportDTO> view(String teacherNumber);
+    public List<showReportDTO> view(String teacherNumber,int currPage,int pageSize);
     //删除发布的实验报告信息
     Integer cancelReport(String teacherNumber,String experimentName);
 

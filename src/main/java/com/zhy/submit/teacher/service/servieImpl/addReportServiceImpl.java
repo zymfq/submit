@@ -71,8 +71,12 @@ public class addReportServiceImpl implements addReportService {
 
     //教师所有实验报告
     @Override
-    public List<showReportDTO> view(String teacherNumber) {
-        return noticeMapper.showTaskNotice(teacherNumber);
+    public List<showReportDTO> view(String teacherNumber,int currPage,int pageSize) {
+        Map<String,Object> data=new HashMap<>();
+        data.put("currIndex",(currPage-1)*pageSize);
+        data.put("pageSize",pageSize);
+        data.put("teacherNumber",teacherNumber);
+        return noticeMapper.showTaskNotice(data);
     }
 
     //删除实验报告

@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -25,8 +27,12 @@ public class scoreDetailServiceImpl implements scoreDetailService {
 
     //查询班级平均分
     @Override
-    public List<showReportDTO> AverageScore(String teacherNumber) {
-        List<showReportDTO> showReportDTOList=noticeMapper.showTaskNotice(teacherNumber);
+    public List<showReportDTO> AverageScore(String teacherNumber,int currPage,int pageSize) {
+        Map<String,Object> data=new HashMap<>();
+        data.put("currIndex",(currPage-1)*pageSize);
+        data.put("pageSize",pageSize);
+        data.put("teacherNumber",teacherNumber);
+        List<showReportDTO> showReportDTOList=noticeMapper.showTaskNotice(data);
         //遍历List,取出每条记录中的taskId,className,gradeName
         for(showReportDTO list:showReportDTOList){
             list.setAverageScore(reportMapper.classAverageScore(list.getTaskId(),list.getSchoolClass(),list.getGrade()));

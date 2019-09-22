@@ -58,6 +58,8 @@ public class downloadZipUtils {
                     int size =0;
                     byte[] buffer=new byte[1024];
                     while((size=bis.read(buffer))>0){
+
+
                         zos.write(buffer,0,size);
                     }
                     zos.closeEntry();

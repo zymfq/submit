@@ -121,7 +121,7 @@ public class viewReportServiceImpl implements viewReportService {
         String zipBasePath="d://downloadZip";
         //得到下载的zip文件问（学年+学期+年级+班级+课程+实验名称）
         showReportDTO showDTO=noticeMapper.getZipName(taskId);
-        String zipName=showDTO.getSchoolYear()+showDTO.getTermName()+"_"+showDTO.getGrade()+showDTO.getSchoolClass()+"_"+showDTO.getCourse()+"_"+showDTO.getExperimentName()+".zip";
+        String zipName=showDTO.getSchoolYear()+"学年"+showDTO.getTermName()+"_"+showDTO.getGrade()+showDTO.getSchoolClass()+"_"+showDTO.getCourse()+"_"+showDTO.getExperimentName()+".zip";
         downloadZipUtils utils=new downloadZipUtils();
         utils.downloadZip(zipBasePath,zipName,filePaths,response);
         return  true;

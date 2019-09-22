@@ -29,8 +29,8 @@ public class viewReportController {
 
     //按班级显示实验报告提交情况
     @GetMapping("/view")
-    public ResultVO viewReport(@RequestParam("teacherNumber") String teacherNumber){
-        List<showReportDTO> reportDTOList=addReportService.view(teacherNumber);
+    public ResultVO viewReport(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
+        List<showReportDTO> reportDTOList=addReportService.view(teacherNumber,currPage,pageSize);
         ResultVO resultVO=ResultVOUtils.success(reportDTOList);
         return  resultVO;
     }
