@@ -33,6 +33,19 @@ where task_notice.teacher_number=#{teacherNumber}
 <delete id="deleteReport" >
   delete from task_notice where teacher_number=#{teacherNumber} and task_name=#{experimentName}
 </delete>
+  <select id="getZipName" resultType="com.zhy.submit.teacher.dto.showReportDTO">
+    select term.study_year as schoolYear,term.term_name as termName,
+       grade.grade_name as grade,
+       class.class_name as schoolClass,
+       course.course_name as course,
+       task_notice.task_name as experimentName from
+task_notice LEFT JOIN term ON task_notice.term_id=term.term_id
+LEFT JOIN grade ON grade.grade_id=term.grade_id
+LEFT JOIN class ON task_notice.class_id=class.class_id
+LEFT JOIN course ON task_notice.course_id=course.course_id
+where task_notice.task_id=#{taskId}
+
+  </select>
   <insert id="insertSelective" parameterType="com.zhy.submit.teacher.entity.taskNotice">
     insert into task_notice
     <trim prefix="(" suffix=")" suffixOverrides=",">

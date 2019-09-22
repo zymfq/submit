@@ -20,6 +20,8 @@ public interface taskNoticeMapper {
     Integer deleteReport(String teacherNumber,String experimentName);
     int deleteByPrimaryKey(Integer id);
 
+    //获取下载压缩文件的名字
+    showReportDTO getZipName(String taskId);
     int insert(taskNotice record);
 
     int insertSelective(taskNotice record);

@@ -73,6 +73,11 @@ public class viewReportController {
     }
 
 
+    //打包下载
+    @GetMapping("/download")
+    public void download(@RequestParam("taskId") String taskId,@RequestParam("className") String className,@RequestParam("gradeName") String gradeName,HttpServletResponse response) throws IOException {
+        viewReportService.downloadZip(taskId,className,gradeName,response);
+    }
 
 }
 

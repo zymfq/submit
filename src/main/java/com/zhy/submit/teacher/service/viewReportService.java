@@ -30,6 +30,10 @@ public interface viewReportService {
     public  Integer markStudent(double score,String studentNumber,String taskId);
 
 
+    //打包下载
+    public boolean downloadZip(String taskId,String className,String gradeName,HttpServletResponse response)throws IOException;
+
+
 
 
 }
