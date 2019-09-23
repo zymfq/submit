@@ -273,4 +273,9 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where teacher_id = #{teacherId,jdbcType=INTEGER}
   </update>
+
+
+    <select id="selectByTeacherNumber" resultType="String">
+        select teacher_name from teacher where teacher_number = #{teacherNumber,jdbcType=VARCHAR}
+    </select>
 </mapper>

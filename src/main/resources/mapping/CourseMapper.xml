@@ -161,4 +161,7 @@
     set course_name = #{courseName,jdbcType=VARCHAR}
     where course_id = #{courseId,jdbcType=INTEGER}
   </update>
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from course
+    </select>
 </mapper>

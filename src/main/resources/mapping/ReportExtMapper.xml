@@ -12,6 +12,7 @@
         <result property="reportName" column="report_name"></result>
         <result property="reportCorrect" column="report_correct"></result>
         <result property="reportPath" column="report_path"></result>
+        <result property="teacher_number" column="teacherNumber"></result>
     </resultMap>
 
     <resultMap id="TaskMap" type="com.zym.submit.entity.TaskNotice">
@@ -19,7 +20,7 @@
         <result property="taskName" column="task_name"></result>
     </resultMap>
 
-    <select id="selectByCourseId"  resultMap="BaseResultMap4">
+    <select id="selectByCourseId" resultMap="BaseResultMap4">
     SELECT t.term_id,t.study_year,t.term_name,tn.task_id,tn.course_id,
       r.student_number,r.task_grade,r.report_name,r.report_correct,
       r.report_path FROM term t,task_notice tn,report r WHERE
@@ -28,10 +29,25 @@
   </select>
 
     <select id="selectNotSubmit" resultMap="TaskMap">
-        select task_id,task_name from task_notice left join
-        (select task_id as i from report) as t1 on task_notice.task_id = t1.i WHERE
-        t1.i is null and task_notice.course_id = #{courseId,jdbcType=INTEGER} and term_id = #{termId,jdbcType=INTEGER}
+
+      select task_id,task_name,submit_deadline FROM task_notice LEFT JOIN
+      (select task_id as i FROM report where student_number = #{studentNumber,jdbcType=VARCHAR}) as t1
+      ON task_notice.task_id = t1.i WHERE t1.i is null and task_notice.course_id = #{courseId,jdbcType=INTEGER}
+      and term_id = #{termId,jdbcType=INTEGER}
+
+    </select>
+
+    <select id="selectAllNotSubmit"  resultMap="TaskMap">
+      select task_id,task_name,course_id,teacher_number,term_id,submit_deadline FROM task_notice LEFT JOIN
+      (select task_id as i FROM report where student_number = #{studentNumber,jdbcType=VARCHAR}) as t1
+      ON task_notice.task_id = t1.i WHERE t1.i is null and task_notice.class_id = #{classId,jdbcType=INTEGER}
+      and term_id = #{termId,jdbcType=INTEGER}
     </select>
 
 
 </mapper>
+        <!--
+        <select id="selectReportByStudentNumber"  resultMap="TaskMap">
+                select task_id,report_name from report where
+                student_number = #{studentNumber,jdbcType=VARCHAR} limit #{page},#{size}
+            </select>-->

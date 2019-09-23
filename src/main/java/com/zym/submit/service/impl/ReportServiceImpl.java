@@ -3,10 +3,11 @@ package com.zym.submit.service.impl;
 import com.zym.submit.dto.ReportDTO;
 import com.zym.submit.dto.StudentDTO;
 import com.zym.submit.dto.TaskDTO;
-import com.zym.submit.entity.Report;
-import com.zym.submit.entity.Student;
-import com.zym.submit.entity.TaskNotice;
+import com.zym.submit.entity.*;
 import com.zym.submit.entity.entityExample.ReportExample;
+import com.zym.submit.entity.entityExample.TaskNoticeExample;
+import com.zym.submit.entity.entityExample.TeacherExample;
+import com.zym.submit.enums.TermTypeEnum;
 import com.zym.submit.exception.SubmitErrorCode;
 import com.zym.submit.exception.SubmitException;
 import com.zym.submit.mapper.*;
@@ -36,8 +37,7 @@ public class ReportServiceImpl implements ReportService {
     private ReportMapper reportMapper;
 
     @Autowired
-    private StudentExtMapper studentExtMapper;
-
+    private TermMapper termMapper;
 
     @Autowired
     private ReportExtMapper reportExtMapper;
@@ -45,9 +45,19 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     private TaskNoticeExtMapper taskNoticeExtMapper;
 
+    @Autowired
+    private TaskNoticeMapper taskNoticeMapper;
+
+    @Autowired
+    private CourseMapper courseMapper;
+
+    @Autowired
+    private TeacherMapper teacherMapper;
+
 
     @Override
     public List<ReportDTO> listReport(String studentNumber) {
+
         ReportExample reportExample = new ReportExample();
         reportExample.createCriteria().andStudentNumberEqualTo(studentNumber);
         reportExample.setOrderByClause("create_time desc");
@@ -57,43 +67,91 @@ public class ReportServiceImpl implements ReportService {
         if (reportList.size() == 0) {
             return new ArrayList<>();
         }
-
         List<ReportDTO> reportDTOList = new ArrayList<>();
 
         for (Report report : reportList) {
-            Student student = studentExtMapper.selectByStudentNumber(studentNumber);
-            StudentDTO studentDTO = new StudentDTO();
-            BeanUtils.copyProperties(student, studentDTO);
             ReportDTO reportDTO = new ReportDTO();
             BeanUtils.copyProperties(report, reportDTO);
-            reportDTO.setStudentDTO(studentDTO);
+
+            TaskNotice taskNotice = taskNoticeExtMapper.selectByTaskId(report.getTaskId());
+
+            String teacherName = teacherMapper.selectByTeacherNumber(taskNotice.getTeacherNumber());
+            Course course =courseMapper.selectByPrimaryKey(taskNotice.getCourseId());
+            reportDTO.setCourseName(course.getCourseName());
+            reportDTO.setTeacherName(teacherName);
             reportDTOList.add(reportDTO);
         }
         return reportDTOList;
     }
 
-    @Override
-    public List<Report> listReportByCourseId(String studentNumber, Integer termId, Integer courseId) {
 
-        List<Report> reportList = new ArrayList<>();
-        List<ReportDTO> reportDTOList = reportExtMapper.selectByCourseId(termId, courseId);
-        for (ReportDTO reportDTO : reportDTOList) {
-            Report report = new Report();
-            BeanUtils.copyProperties(reportDTO, report);
-            reportList.add(report);
+
+    @Override
+    public List<ReportDTO> listReportByCourseId(String studentNumber, Integer termId, Integer courseId) {
+
+        TaskNoticeExample taskNoticeExample = new TaskNoticeExample();
+        Course course = courseMapper.selectByPrimaryKey(courseId);
+        taskNoticeExample.createCriteria().andTermIdEqualTo(termId).andCourseIdEqualTo(courseId);
+        List<TaskNotice> taskNotices = taskNoticeMapper.selectByExample(taskNoticeExample);
+        List<Integer> list = new ArrayList<>();
+        List<String> teacherNumList =new ArrayList<>();
+
+        for (TaskNotice taskNotice : taskNotices) {
+
+            list.add(taskNotice.getTaskId());
+            String teacherNumber = taskNotice.getTeacherNumber();
+            String name = teacherMapper.selectByTeacherNumber(teacherNumber);
+            teacherNumList.add(name);
+
         }
 
-        return reportList;
+        TeacherExample teacherExample = new TeacherExample();
+        teacherExample.createCriteria().andTeacherIdIn(list);
+
+        ReportExample reportExample = new ReportExample();
+        reportExample.createCriteria().andStudentNumberEqualTo(studentNumber).andTaskIdIn(list);
+        List<Report> reportList = reportMapper.selectByExample(reportExample);
+        /*List<ReportDTO> reportDTOList = reportList.stream().map(report -> {
+            ReportDTO reportDTO = new ReportDTO();
+            BeanUtils.copyProperties(report, reportDTO);
+            reportDTO.setCourseName(course.getCourseName());
+           // reportDTO.setTeacherName();
+            return reportDTO;
+        }).collect(Collectors.toList());*/
+
+        List<ReportDTO> result = new ArrayList<>();
+        for (int i = 0; i < reportList.size(); i++) {
+            ReportDTO reportDTO = new ReportDTO();
+            BeanUtils.copyProperties(reportList.get(i), reportDTO);
+            reportDTO.setCourseName(course.getCourseName());
+            reportDTO.setTeacherName(teacherNumList.get(i));
+            result.add(reportDTO);
+        }
+        return result;
     }
 
     @Override
-    public List<TaskDTO> listNotSubmit(String studentNumber, Integer termId, Integer courseId) {
+    public List<TaskDTO> listAllNotSubmit(String studentNumber,Integer termId, Integer classId) {
 
-        List<TaskNotice> taskNoticeList = reportExtMapper.selectNotSubmit(termId, courseId);
-        /*TaskDTO taskDTOList = new TaskDTO();*/
+        List<TaskNotice> taskNoticeList = reportExtMapper.selectAllNotSubmit(studentNumber, termId, classId);
+
+        if(taskNoticeList == null){
+            throw new SubmitException(SubmitErrorCode.ALL_REPORT_IS_SUBMIT);
+        }
+
         List<TaskDTO> taskDTOList = taskNoticeList.stream().map(taskNotice -> {
             TaskDTO taskDTO = new TaskDTO();
+            Course course = courseMapper.selectByPrimaryKey(taskNotice.getCourseId());
             BeanUtils.copyProperties(taskNotice, taskDTO);
+
+            taskDTO.setCourseName(course.getCourseName());
+            String teacherNumber = teacherMapper.selectByTeacherNumber(taskNotice.getTeacherNumber());
+            taskDTO.setTeacherName(teacherNumber);
+
+            Term term = termMapper.selectByPrimaryKey(termId);
+            taskDTO.setStudyYear(term.getStudyYear());
+            taskDTO.setTermName(TermTypeEnum.nameOfType(term.getTermId()));
+
             return taskDTO;
         }).collect(Collectors.toList());
 
@@ -101,7 +159,47 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public Map<String, Object> upload(MultipartFile myFiles, Integer taskId,String studentNumber,
+    public List<TaskDTO> listNotSubmit(String studentNumber, Integer termId, Integer courseId) {
+
+        List<TaskNotice> taskNoticeList = reportExtMapper.selectNotSubmit(studentNumber ,termId, courseId);
+
+        Course course = courseMapper.selectByPrimaryKey(courseId);
+
+        List<TaskDTO> taskDTOList = taskNoticeList.stream().map(taskNotice -> {
+            TaskDTO taskDTO = new TaskDTO();
+            BeanUtils.copyProperties(taskNotice, taskDTO);
+            taskDTO.setCourseName(course.getCourseName());
+            return taskDTO;
+        }).collect(Collectors.toList());
+
+        return taskDTOList;
+    }
+
+    @Override
+    public int rollBackReport(Integer taskId) {
+
+        ReportExample reportExample = new ReportExample();
+        reportExample.createCriteria().andTaskIdEqualTo(Collections.singletonList(taskId));
+
+        TaskNotice taskNotice = taskNoticeExtMapper.selectByTaskId(taskId);
+
+        if(taskNotice == null){
+            throw new SubmitException(SubmitErrorCode.FILE_IS_MISS);
+        }
+
+        Date submitDeadline = taskNotice.getSubmitDeadline();
+
+        if(submitDeadline.after(new Date())){
+            throw new SubmitException(SubmitErrorCode.SUBMIT_TIME_OVER);
+        }
+
+        int effectNumber = reportMapper.deleteByExample(reportExample);
+
+        return effectNumber;
+    }
+
+    @Override
+    public Map<String, Object> upload(MultipartFile myFiles, Integer taskId, String studentNumber,
                                       HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, Object> resMap = new HashMap<>();

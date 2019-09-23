@@ -2,6 +2,8 @@ package com.zym.submit.dto;
 
         import lombok.Data;
 
+        import java.util.Date;
+
 /**
  * @author zym
  * @date 2019-09-16-10:52
@@ -11,9 +13,16 @@ public class TaskDTO {
 
     private Integer taskId;
 
-    private String classId;
-
-    private String teacherNumber;
+    private String courseName;
 
     private String taskName;
+
+    private String teacherName;
+
+    private String studyYear;
+
+    private String termName;
+
+    private Date submitDeadline;
+
 }

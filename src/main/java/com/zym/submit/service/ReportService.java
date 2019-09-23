@@ -2,7 +2,6 @@ package com.zym.submit.service;
 
 import com.zym.submit.dto.ReportDTO;
 import com.zym.submit.dto.TaskDTO;
-import com.zym.submit.entity.Report;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +18,49 @@ public interface ReportService {
     Map<String, Object> upload(MultipartFile myFiles, Integer taskId, String studentNumber,
                                HttpServletRequest request, HttpServletResponse response);
 
+    /**
+     * 查询所有试验报告
+     *
+     * @param studentNumber
+     * @return
+     */
     List<ReportDTO> listReport(String studentNumber);
 
-    List<Report> listReportByCourseId(String studentNumber, Integer termId, Integer courseId);
+    /**
+     * 根据学期课程查询试验报告
+     *
+     * @param studentNumber
+     * @param termId
+     * @param courseId
+     * @return
+     */
+    List<ReportDTO> listReportByCourseId(String studentNumber, Integer termId, Integer courseId);
 
+
+    /**
+     * 查询所有未提交的实验报告
+     *
+     * @param studentNumber
+     * @return
+     */
+    List<TaskDTO> listAllNotSubmit(String studentNumber, Integer termId, Integer classId);
+
+    /**
+     * 根据学期课程查询未提交的实验报告
+     *
+     * @param studentNumber
+     * @param termId
+     * @param courseId
+     * @return
+     */
     List<TaskDTO> listNotSubmit(String studentNumber, Integer termId, Integer courseId);
+
+
+    /**
+     * 撤回实验报告
+     * @param taskId
+     * @return
+     */
+    int rollBackReport(Integer taskId);
 
 }

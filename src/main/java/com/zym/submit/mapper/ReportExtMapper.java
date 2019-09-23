@@ -11,7 +11,12 @@ import java.util.List;
  */
 public interface ReportExtMapper {
 
-    List<ReportDTO> selectByCourseId(Integer termId, Integer courseId);
+    List<ReportDTO> selectByCourseId(String studentNumber,Integer termId, Integer courseId);
 
-    List<TaskNotice> selectNotSubmit(Integer termId, Integer courseId);
+    List<TaskNotice> selectNotSubmit(String studentNumber,Integer termId, Integer courseId);
+
+    List<TaskNotice> selectAllNotSubmit(String studentNumber,Integer termId,Integer classId);
+
+    List<ReportDTO> selectReportByStudentNumber(String studentNumber, Integer page, Integer size);
+
 }

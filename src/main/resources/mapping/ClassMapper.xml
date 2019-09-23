@@ -255,4 +255,7 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where class_id = #{classId,jdbcType=INTEGER}
   </update>
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from class
+    </select>
 </mapper>

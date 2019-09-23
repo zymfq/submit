@@ -38,6 +38,7 @@ public class StudentServiceImpl implements StudentService {
         if(!StringUtils.equals(studentPassword, studentDTO.getStudentPassword())){
             throw new SubmitException(SubmitErrorCode.STUDENT_LOGIN_FAIL);
         }
+
         return studentDTO;
     }
 

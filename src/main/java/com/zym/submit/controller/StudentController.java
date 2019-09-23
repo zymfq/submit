@@ -27,7 +27,8 @@ public class StudentController {
 
     @PostMapping("/login")
     public CommonReturnType login(@RequestParam(name = "studentNumber") String studentNumber,
-                                  @RequestParam(name = "studentPassword") String studentPassword){
+                                  @RequestParam(name = "studentPassword") String studentPassword,
+                                  HttpServletRequest request){
 
         //校验登录参数是否合法
         if(StringUtils.isEmpty(studentNumber) || StringUtils.isEmpty(studentPassword)){
@@ -35,6 +36,8 @@ public class StudentController {
         }
         //学生登录
         StudentDTO studentDTO = studentService.login(studentNumber, studentPassword);
+
+        request.getSession().setAttribute("name", "studentInfo");
 
         return CommonReturnType.okOf(studentDTO);
     }

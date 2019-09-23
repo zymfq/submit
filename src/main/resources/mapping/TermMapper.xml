@@ -240,4 +240,8 @@
       grade_id = #{gradeId,jdbcType=INTEGER}
     where term_id = #{termId,jdbcType=INTEGER}
   </update>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from term
+    </select>
 </mapper>

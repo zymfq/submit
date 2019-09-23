@@ -27,4 +27,6 @@ public interface TermMapper {
     int updateByPrimaryKeySelective(Term record);
 
     int updateByPrimaryKey(Term record);
+
+    List<Term> findAll();
 }

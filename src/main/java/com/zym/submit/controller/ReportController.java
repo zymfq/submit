@@ -2,7 +2,6 @@ package com.zym.submit.controller;
 
 import com.zym.submit.dto.ReportDTO;
 import com.zym.submit.dto.TaskDTO;
-import com.zym.submit.entity.Report;
 import com.zym.submit.mapper.StudentExtMapper;
 import com.zym.submit.response.CommonReturnType;
 import com.zym.submit.service.ReportService;
@@ -75,25 +74,59 @@ public class ReportController {
         return "上传失败！";
     }
 
-
+    /**
+     * 查询所有已提交试验报告
+     * @param studentNumber
+     * @return
+     */
     @GetMapping("/list")
     @ResponseBody
-    public CommonReturnType listReport(@RequestParam(name = "studentNumber") String studentNumber){
+    public CommonReturnType listReport(@RequestParam(name = "studentNumber") String studentNumber,
+                                       @RequestParam(name="page") Integer page,
+                                       @RequestParam(name = "limit") Integer limit){
 
+        System.out.println("page"+page);
+        System.out.println("limit"+limit);
         List<ReportDTO> reportDTOList = reportService.listReport(studentNumber);
 
         return CommonReturnType.okOf(reportDTOList);
     }
 
+    /**
+     * 根据课程查询已提交实验报告
+     * @param studentNumber
+     * @param termId
+     * @param courseId
+     * @return
+     */
     @GetMapping("/list_by_course_id")
     @ResponseBody
     public CommonReturnType listReportByCourseName(@RequestParam(name = "studentNumber")String studentNumber,
                                                    @RequestParam(name = "termId") Integer termId,
                                                    @RequestParam(name = "courseId") Integer courseId){
-        List<Report> reportList = reportService.listReportByCourseId(studentNumber, termId,courseId);
+        List<ReportDTO> reportList = reportService.listReportByCourseId(studentNumber, termId,courseId);
 
         return CommonReturnType.okOf(reportList);
     }
+
+    /**
+     * 查询全部未提交实验报告
+     * @param studentNumber
+     * @param termId
+     * @param classId
+     * @return
+     */
+    @GetMapping("list_all_not_submit")
+    @ResponseBody
+    public CommonReturnType listAllByNotSubmit(@RequestParam(name = "studentNumber")String studentNumber,
+                                                  @RequestParam(name = "termId") Integer termId,
+                                                  @RequestParam(name = "classId") Integer classId){
+
+        List<TaskDTO> reportList = reportService.listAllNotSubmit(studentNumber, termId, classId);
+        return CommonReturnType.okOf(reportList);
+    }
+
+
 
     @GetMapping("list_not_submit")
     @ResponseBody
@@ -105,6 +138,27 @@ public class ReportController {
         return CommonReturnType.okOf(reportList);
     }
 
+    /**
+     * 撤回试验报告
+     * @param taskId
+     * @return
+     */
+    @GetMapping("roll_back")
+    @ResponseBody
+    public CommonReturnType rollBackReport(@RequestParam(name = "taskId") Integer taskId){
+        int effectNumber = reportService.rollBackReport(taskId);
+        return CommonReturnType.okOf(effectNumber );
+    }
+
+    /**
+     * 提交试验报告
+     * @param file
+     * @param studentNumber
+     * @param taskId
+     * @param request
+     * @param response
+     * @return
+     */
     @PostMapping("/upload2")
     @ResponseBody
     public CommonReturnType upload2(@RequestParam("file") MultipartFile file,
@@ -112,7 +166,7 @@ public class ReportController {
                                     @RequestParam(name = "taskId") Integer taskId,
                                     HttpServletRequest request,
                                     HttpServletResponse response
-                                    ){
+    ){
 
         /*Student student = studentExtMapper.selectByStudentNumber(studentNumber);
         if(student == null){

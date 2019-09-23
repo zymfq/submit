@@ -175,7 +175,7 @@ public class ReportExample {
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdEqualTo(Integer value) {
+        public Criteria andTaskIdEqualTo(List value) {
             addCriterion("task_id =", value, "taskId");
             return (Criteria) this;
         }
