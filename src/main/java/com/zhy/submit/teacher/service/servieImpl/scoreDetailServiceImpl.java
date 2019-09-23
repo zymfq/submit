@@ -1,5 +1,6 @@
 package com.zhy.submit.teacher.service.servieImpl;
 
+import com.zhy.submit.teacher.dto.AverageScoreOfCourseDTO;
 import com.zhy.submit.teacher.dto.StudentSubmissionDTO;
 import com.zhy.submit.teacher.dto.showReportDTO;
 import com.zhy.submit.teacher.entity.Student;
@@ -35,7 +36,7 @@ public class scoreDetailServiceImpl implements scoreDetailService {
         List<showReportDTO> showReportDTOList=noticeMapper.showTaskNotice(data);
         //遍历List,取出每条记录中的taskId,className,gradeName
         for(showReportDTO list:showReportDTOList){
-            list.setAverageScore(reportMapper.classAverageScore(list.getTaskId(),list.getSchoolClass(),list.getGrade()));
+            list.setAverageScore(reportMapper.classAverageScore(list.getTaskId()));
         }
         return showReportDTOList;
 
@@ -43,7 +44,20 @@ public class scoreDetailServiceImpl implements scoreDetailService {
 
     //班级学生成绩详情
     @Override
-    public List<StudentSubmissionDTO> ScoreDetail(String taskId, String className, String gradeName) {
-        return studentMapper.personalScoreDetail(taskId, className, gradeName);
+    public List<StudentSubmissionDTO> ScoreDetail(String taskId) {
+        return studentMapper.personalScoreDetail(taskId);
+    }
+
+    //按班级显示老师所有课程
+    @Override
+    public List<AverageScoreOfCourseDTO> showByCourse(String teacherNumber) {
+       return noticeMapper.viewByCourse(teacherNumber);
+    }
+
+    //班级学生每门课程所有实验平均分
+
+    @Override
+    public List<StudentSubmissionDTO> AllExperimentAverageScore(int classId, int courseId, int termId) {
+        return studentMapper.AllReportAverageScore(classId, courseId, termId);
     }
 }

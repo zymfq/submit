@@ -50,8 +50,12 @@ public class viewReportController {
 
     //查看各个班级已提交学生名单和URL
     @GetMapping("/submitted")
-    public ResultVO submitted(@RequestParam("taskId") String taskId,@RequestParam("schoolClass") String className,@RequestParam("grade") String gradeName){
-        List<StudentSubmissionDTO> result=viewReportService.SubmittedStudent(taskId, className, gradeName);
+    public ResultVO submitted(@RequestParam("taskId") String taskId){
+        List<StudentSubmissionDTO> result=viewReportService.SubmittedStudent(taskId);
+        int i=1;
+        for(StudentSubmissionDTO a:result){
+            a.setNumber(i++);
+        }
         return ResultVOUtils.success(result);
     }
 
@@ -75,8 +79,8 @@ public class viewReportController {
 
     //打包下载
     @GetMapping("/download")
-    public void download(@RequestParam("taskId") String taskId,@RequestParam("className") String className,@RequestParam("gradeName") String gradeName,HttpServletResponse response) throws IOException {
-        viewReportService.downloadZip(taskId,className,gradeName,response);
+    public void download(@RequestParam("taskId")String taskId,HttpServletResponse response) throws IOException {
+        viewReportService.downloadZip(taskId,response);
     }
 
 }

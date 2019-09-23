@@ -1,5 +1,6 @@
 package com.zhy.submit.teacher.mapper;
 
+import com.zhy.submit.teacher.dto.AverageScoreOfCourseDTO;
 import com.zhy.submit.teacher.dto.addReportDTO;
 import com.zhy.submit.teacher.dto.showReportDTO;
 import com.zhy.submit.teacher.entity.taskNotice;
@@ -23,6 +24,9 @@ public interface taskNoticeMapper {
 
     //获取下载压缩文件的名字
     showReportDTO getZipName(String taskId);
+
+    //按班级展示老师所有课程
+    List<AverageScoreOfCourseDTO> viewByCourse(String teacherNumber);
     int insert(taskNotice record);
 
     int insertSelective(taskNotice record);

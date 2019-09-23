@@ -27,7 +27,7 @@ public class LoginController {
     }
     //教师登录
     @PostMapping("/login")
-    public ModelAndView login(@RequestParam("number") String number,@RequestParam("password") String password, Map<String,Object> map){
+    public ModelAndView login(@RequestParam("teacherNumber") String number,@RequestParam("password") String password, Map<String,Object> map){
        TeacherDTO teacherDTO=new TeacherDTO();
        teacherDTO.setTeacherNumber(number);
        teacherDTO.setTeacherPassword(password);

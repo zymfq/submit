@@ -24,7 +24,7 @@ public class addReportDTO {
     private Integer termId;
     //实验名称
     private String experimentName;
-    //教师姓名
+    //教师工号
     private String teacherNumber;
     //截止日期
     private Date submitDeadline;

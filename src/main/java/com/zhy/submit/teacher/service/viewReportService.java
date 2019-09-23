@@ -23,7 +23,7 @@ public interface viewReportService {
     public List<StudentSubmissionDTO> unsubmittedStudent(String taskId,String className,String gradeName);
 
     //已提交实验报告的学生信息（姓名+学号+path）
-    public List<StudentSubmissionDTO> SubmittedStudent(String taskId,String className,String gradeName);
+    public List<StudentSubmissionDTO> SubmittedStudent(String taskId);
 
 
     //打分
@@ -31,7 +31,7 @@ public interface viewReportService {
 
 
     //打包下载
-    public boolean downloadZip(String taskId,String className,String gradeName,HttpServletResponse response)throws IOException;
+    public boolean downloadZip(String taskId,HttpServletResponse response)throws IOException;
 
 
 

@@ -57,8 +57,8 @@ public class viewReportServiceImpl implements viewReportService {
 
     //已提交实验报告的学生信息
     @Override
-    public List<StudentSubmissionDTO> SubmittedStudent(String taskId, String className, String gradeName) {
-        return  studentMapper.SubmittedStudentInfo(taskId, className, gradeName);
+    public List<StudentSubmissionDTO> SubmittedStudent(String taskId) {
+        return  studentMapper.SubmittedStudentInfo(taskId);
     }
 
 
@@ -96,9 +96,9 @@ public class viewReportServiceImpl implements viewReportService {
 
     //打包下载
     @Override
-    public boolean downloadZip(String taskId, String className, String gradeName,HttpServletResponse response) throws IOException {
+    public boolean downloadZip(String taskId,HttpServletResponse response) throws IOException {
         //获取下载文件的URL
-        List<StudentSubmissionDTO> list=studentMapper.SubmittedStudentInfo(taskId, className, gradeName);
+        List<StudentSubmissionDTO> list=studentMapper.SubmittedStudentInfo(taskId);
         //根据URL得到文件的绝对路径
         List<String> filePaths=new ArrayList<String>();
         for(StudentSubmissionDTO a:list){

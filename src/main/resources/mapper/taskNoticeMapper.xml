@@ -47,6 +47,19 @@ LEFT JOIN course ON task_notice.course_id=course.course_id
 where task_notice.task_id=#{taskId}
 
   </select>
+  <select id="viewByCourse" resultType="com.zhy.submit.teacher.dto.AverageScoreOfCourseDTO">
+   select DISTINCT term.study_year as studyYear,term.term_name as termName,term.term_id as termId,
+       grade.grade_name as gradeName,
+       class.class_name as className,
+       class.class_id as className,
+       course.course_name as courseName,course.course_id as courseId from
+task_notice JOIN term ON task_notice.term_id=term.term_id
+ JOIN grade ON grade.grade_id=term.grade_id
+ JOIN class ON task_notice.class_id=class.class_id
+ JOIN course ON task_notice.course_id=course.course_id
+where task_notice.teacher_number=#{teacherNumber}
+
+  </select>
   <insert id="insertSelective" parameterType="com.zhy.submit.teacher.entity.taskNotice">
     insert into task_notice
     <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -18,10 +18,13 @@ public interface StudentMapper {
     List<StudentSubmissionDTO> unsubmitStudentInfo(String taskId,String className,String gradeName);
 
     //已提交实验报告的学生信息
-    List<StudentSubmissionDTO> SubmittedStudentInfo(String taskId,String className,String gradeName);
+    List<StudentSubmissionDTO> SubmittedStudentInfo(String taskId);
 
     //班级学生成绩详情
-    List<StudentSubmissionDTO> personalScoreDetail(String taskId,String className,String gradeName);
+    List<StudentSubmissionDTO> personalScoreDetail(String taskId);
+
+    //班级学生每门课程所有实验平均分
+    List<StudentSubmissionDTO> AllReportAverageScore(int classId,int courseId,int termId);
     int insert(Student record);
 
     int insertSelective(Student record);

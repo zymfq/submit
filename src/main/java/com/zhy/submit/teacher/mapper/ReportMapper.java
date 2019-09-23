@@ -11,7 +11,7 @@ public interface ReportMapper {
     Integer addScore(double score,String studentNumber,String taskId);
 
     //查询班级平均分
-    Double classAverageScore(String taskId,String className,String gradeName);
+    Double classAverageScore(String taskId);
     int deleteByPrimaryKey(Integer id);
 
     int insert(Report record);

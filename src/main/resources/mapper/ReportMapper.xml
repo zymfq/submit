@@ -44,14 +44,7 @@ where student_number=#{studentNumber} and task_id=#{taskId}
   </insert>
   <select id="classAverageScore" resultType="java.lang.Double">
     select  avg(task_grade)from report
-where task_id=#{taskId} and class_id=
-(
-select class.class_id from class
-where
-class.class_name=#{className}
-and
-grade_id in (select grade_id from grade where grade_name=#{gradeName})
-)
+where task_id=#{taskId}
   </select>
   <insert id="insertSelective" parameterType="com.zhy.submit.teacher.entity.Report">
     insert into report
