@@ -9,5 +9,4 @@ public class Grade {
 
     private String gradeName;
 
-
 }

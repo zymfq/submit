@@ -1,7 +1,6 @@
 package com.zym.submit.entity;
 
 import lombok.Data;
-
 import java.util.Date;
 
 @Data

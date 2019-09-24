@@ -10,10 +10,14 @@ public enum SubmitErrorCode implements ISubmitErrorCode {
     UNKNOWN_ERROR(1000,"未知错误！！"),
     PARAMETER_VALIDATION_ERROR(1001, "参数不合法！"),
     SUBMIT_TIME_OVER(1002,"超出操作时间范围"),
+    CLASS_NOT_EXIST(1003,"班级信息不存在"),
+    COURSE_NOT_EXIST(1004,"课程信息不存在"),
+    TERM_NOT_EXIST(1005,"学期信息不存在"),
 
     //200开头代表学生相关信息错误
     STUDENT_LOGIN_FAIL(2001,"学生账号或密码不正确"),
     STUDENT_NOT_LOGIN(2002,"用户未登录~"),
+    STUDENT_NOT_EXIST(2003,"用户不存在"),
 
     //300开头表示实验报告信相关信息错误
     FORMAT_ERROR(3001,"上传文件格式错误！"),

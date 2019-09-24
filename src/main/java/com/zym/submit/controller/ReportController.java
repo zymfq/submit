@@ -32,15 +32,11 @@ import java.util.Map;
  */
 @Controller
 @Slf4j
-//@RequestMapping("/qq")
 public class ReportController {
 
 
     @Autowired
     private ReportService reportService;
-
-    @Autowired
-    private StudentExtMapper studentExtMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportController.class);
 
@@ -82,13 +78,10 @@ public class ReportController {
     @GetMapping("/list")
     @ResponseBody
     public CommonReturnType listReport(@RequestParam(name = "studentNumber") String studentNumber,
-                                       @RequestParam(name="page") Integer page,
-                                       @RequestParam(name = "limit") Integer limit){
+                                       @RequestParam(name = "pageNum")Integer pageNum,
+                                       @RequestParam(name = "pageSize")Integer pageSize){
 
-        System.out.println("page"+page);
-        System.out.println("limit"+limit);
-        List<ReportDTO> reportDTOList = reportService.listReport(studentNumber);
-
+        List<ReportDTO> reportDTOList = reportService.listReport(studentNumber,pageNum, pageSize);
         return CommonReturnType.okOf(reportDTOList);
     }
 
@@ -103,9 +96,11 @@ public class ReportController {
     @ResponseBody
     public CommonReturnType listReportByCourseName(@RequestParam(name = "studentNumber")String studentNumber,
                                                    @RequestParam(name = "termId") Integer termId,
-                                                   @RequestParam(name = "courseId") Integer courseId){
-        List<ReportDTO> reportList = reportService.listReportByCourseId(studentNumber, termId,courseId);
+                                                   @RequestParam(name = "courseId") Integer courseId,
+                                                   @RequestParam(name = "pageNum")Integer pageNum,
+                                                   @RequestParam(name = "pageSize")Integer pageSize){
 
+        List<ReportDTO> reportList = reportService.listReportByCourseId(studentNumber, termId,courseId,pageNum, pageSize);
         return CommonReturnType.okOf(reportList);
     }
 
@@ -119,10 +114,12 @@ public class ReportController {
     @GetMapping("list_all_not_submit")
     @ResponseBody
     public CommonReturnType listAllByNotSubmit(@RequestParam(name = "studentNumber")String studentNumber,
-                                                  @RequestParam(name = "termId") Integer termId,
-                                                  @RequestParam(name = "classId") Integer classId){
+                                               @RequestParam(name = "termId") Integer termId,
+                                               @RequestParam(name = "classId") Integer classId,
+                                               @RequestParam(name = "pageNum")Integer pageNum,
+                                               @RequestParam(name = "pageSize")Integer pageSize){
 
-        List<TaskDTO> reportList = reportService.listAllNotSubmit(studentNumber, termId, classId);
+        List<TaskDTO> reportList = reportService.listAllNotSubmit(studentNumber, termId, classId,pageNum, pageSize);
         return CommonReturnType.okOf(reportList);
     }
 
@@ -167,11 +164,6 @@ public class ReportController {
                                     HttpServletRequest request,
                                     HttpServletResponse response
     ){
-
-        /*Student student = studentExtMapper.selectByStudentNumber(studentNumber);
-        if(student == null){
-            throw new SubmitException(SubmitErrorCode.STUDENT_NOT_LOGIN);
-        }*/
 
         Map<String,Object> fileMap;
         fileMap = reportService.upload(file, taskId, studentNumber, request, response);

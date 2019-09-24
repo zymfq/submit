@@ -1,7 +1,6 @@
 package com.zym.submit.dto;
 
 import lombok.Data;
-
 import java.util.Date;
 
 /**

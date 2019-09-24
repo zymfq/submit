@@ -24,6 +24,14 @@ public class Word2PdfController {
     @Autowired
     private DocumentConverter documentConverter;
 
+    /**
+     * 文件转化成pdf预览
+     * @param request
+     * @param response
+     * @param map
+     * @return
+     * @throws IOException
+     */
     //将上传的Word文档转成PDF,通过输出流相应到页面
     @RequestMapping("/word2PDF")
     @ResponseBody
@@ -36,7 +44,6 @@ public class Word2PdfController {
         String PdfName = url.substring(wordName.lastIndexOf(".") - 1);
 
         File inputFile = new File("F:/Test/uploadFiles/" + wordName);
-
         File outputFile = new File("F:/Test/previewPDF/" + PdfName + ".pdf");
 
         try {
@@ -61,9 +68,7 @@ public class Word2PdfController {
 
             e.printStackTrace();
             System.out.println("转换出错");
-
         }
-
 
         return new ModelAndView("success", map);
     }

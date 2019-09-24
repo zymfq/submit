@@ -24,7 +24,7 @@ public interface ReportService {
      * @param studentNumber
      * @return
      */
-    List<ReportDTO> listReport(String studentNumber);
+    List<ReportDTO> listReport(String studentNumber,Integer pageNum, Integer pageSize);
 
     /**
      * 根据学期课程查询试验报告
@@ -34,7 +34,7 @@ public interface ReportService {
      * @param courseId
      * @return
      */
-    List<ReportDTO> listReportByCourseId(String studentNumber, Integer termId, Integer courseId);
+    List<ReportDTO> listReportByCourseId(String studentNumber, Integer termId, Integer courseId,Integer pageNum, Integer pageSize);
 
 
     /**
@@ -43,7 +43,7 @@ public interface ReportService {
      * @param studentNumber
      * @return
      */
-    List<TaskDTO> listAllNotSubmit(String studentNumber, Integer termId, Integer classId);
+    List<TaskDTO> listAllNotSubmit(String studentNumber, Integer termId, Integer classId,Integer pageNum, Integer pageSize);
 
     /**
      * 根据学期课程查询未提交的实验报告

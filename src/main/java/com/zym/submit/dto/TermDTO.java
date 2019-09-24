@@ -17,5 +17,4 @@ public class TermDTO {
 
     private Integer gradeId;
 
-
 }

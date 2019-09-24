@@ -1,8 +1,7 @@
 package com.zym.submit.dto;
 
-        import lombok.Data;
-
-        import java.util.Date;
+import lombok.Data;
+import java.util.Date;
 
 /**
  * @author zym

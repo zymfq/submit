@@ -24,7 +24,13 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
-
+    /**
+     * 登陆接口
+     * @param studentNumber
+     * @param studentPassword
+     * @param request
+     * @return
+     */
     @PostMapping("/login")
     public CommonReturnType login(@RequestParam(name = "studentNumber") String studentNumber,
                                   @RequestParam(name = "studentPassword") String studentPassword,
@@ -42,19 +48,29 @@ public class StudentController {
         return CommonReturnType.okOf(studentDTO);
     }
 
-
+    /**
+     * 退出登录
+     * @param request
+     * @return
+     */
     @GetMapping("/logout")
     public CommonReturnType logout(HttpServletRequest request){
+
         request.getSession().invalidate();
         return CommonReturnType.okOf();
     }
 
-
+    /**
+     * 修改密码
+     * @param studentNumber
+     * @param studentPassword
+     * @return
+     */
     @PostMapping("/update")
     public CommonReturnType updatePassword(@RequestParam(name = "studentNumber") String studentNumber,
                                            @RequestParam(name = "studentPassword") String studentPassword){
-        StudentDTO studentDTO = studentService.updatePassword(studentNumber, studentPassword);
 
+        StudentDTO studentDTO = studentService.updatePassword(studentNumber, studentPassword);
         return CommonReturnType.okOf(studentDTO);
     }
 

@@ -1,9 +1,10 @@
 package com.zym.submit.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.zym.submit.dto.ReportDTO;
-import com.zym.submit.dto.StudentDTO;
 import com.zym.submit.dto.TaskDTO;
 import com.zym.submit.entity.*;
+import com.zym.submit.entity.Class;
 import com.zym.submit.entity.entityExample.ReportExample;
 import com.zym.submit.entity.entityExample.TaskNoticeExample;
 import com.zym.submit.entity.entityExample.TeacherExample;
@@ -54,14 +55,18 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     private TeacherMapper teacherMapper;
 
+    @Autowired
+    private ClassMapper classMapper;
+
 
     @Override
-    public List<ReportDTO> listReport(String studentNumber) {
+    public List<ReportDTO> listReport(String studentNumber, Integer pageNum, Integer pageSize) {
 
         ReportExample reportExample = new ReportExample();
         reportExample.createCriteria().andStudentNumberEqualTo(studentNumber);
         reportExample.setOrderByClause("create_time desc");
 
+        PageHelper.startPage(pageNum, pageSize);
         List<Report> reportList = reportMapper.selectByExample(reportExample);
 
         if (reportList.size() == 0) {
@@ -76,7 +81,7 @@ public class ReportServiceImpl implements ReportService {
             TaskNotice taskNotice = taskNoticeExtMapper.selectByTaskId(report.getTaskId());
 
             String teacherName = teacherMapper.selectByTeacherNumber(taskNotice.getTeacherNumber());
-            Course course =courseMapper.selectByPrimaryKey(taskNotice.getCourseId());
+            Course course = courseMapper.selectByPrimaryKey(taskNotice.getCourseId());
             reportDTO.setCourseName(course.getCourseName());
             reportDTO.setTeacherName(teacherName);
             reportDTOList.add(reportDTO);
@@ -85,16 +90,18 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
-
     @Override
-    public List<ReportDTO> listReportByCourseId(String studentNumber, Integer termId, Integer courseId) {
+    public List<ReportDTO> listReportByCourseId(String studentNumber, Integer termId, Integer courseId,
+                                                Integer pageNum, Integer pageSize) {
+
+        this.checkTerm_Course(termId, courseId);
 
         TaskNoticeExample taskNoticeExample = new TaskNoticeExample();
         Course course = courseMapper.selectByPrimaryKey(courseId);
         taskNoticeExample.createCriteria().andTermIdEqualTo(termId).andCourseIdEqualTo(courseId);
         List<TaskNotice> taskNotices = taskNoticeMapper.selectByExample(taskNoticeExample);
         List<Integer> list = new ArrayList<>();
-        List<String> teacherNumList =new ArrayList<>();
+        List<String> teacherNumList = new ArrayList<>();
 
         for (TaskNotice taskNotice : taskNotices) {
 
@@ -110,7 +117,10 @@ public class ReportServiceImpl implements ReportService {
 
         ReportExample reportExample = new ReportExample();
         reportExample.createCriteria().andStudentNumberEqualTo(studentNumber).andTaskIdIn(list);
+
+        PageHelper.startPage(pageNum, pageSize);
         List<Report> reportList = reportMapper.selectByExample(reportExample);
+
         /*List<ReportDTO> reportDTOList = reportList.stream().map(report -> {
             ReportDTO reportDTO = new ReportDTO();
             BeanUtils.copyProperties(report, reportDTO);
@@ -131,11 +141,15 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<TaskDTO> listAllNotSubmit(String studentNumber,Integer termId, Integer classId) {
+    public List<TaskDTO> listAllNotSubmit(String studentNumber, Integer termId, Integer classId, Integer pageNum,
+                                          Integer pageSize) {
 
+        this.checkTerm_Class(termId, classId);
+
+        PageHelper.startPage(pageNum, pageSize);
         List<TaskNotice> taskNoticeList = reportExtMapper.selectAllNotSubmit(studentNumber, termId, classId);
 
-        if(taskNoticeList == null){
+        if (taskNoticeList == null) {
             throw new SubmitException(SubmitErrorCode.ALL_REPORT_IS_SUBMIT);
         }
 
@@ -161,7 +175,8 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<TaskDTO> listNotSubmit(String studentNumber, Integer termId, Integer courseId) {
 
-        List<TaskNotice> taskNoticeList = reportExtMapper.selectNotSubmit(studentNumber ,termId, courseId);
+        this.checkTerm_Course(termId, courseId);
+        List<TaskNotice> taskNoticeList = reportExtMapper.selectNotSubmit(studentNumber, termId, courseId);
 
         Course course = courseMapper.selectByPrimaryKey(courseId);
 
@@ -183,13 +198,13 @@ public class ReportServiceImpl implements ReportService {
 
         TaskNotice taskNotice = taskNoticeExtMapper.selectByTaskId(taskId);
 
-        if(taskNotice == null){
+        if (taskNotice == null) {
             throw new SubmitException(SubmitErrorCode.FILE_IS_MISS);
         }
 
         Date submitDeadline = taskNotice.getSubmitDeadline();
 
-        if(submitDeadline.after(new Date())){
+        if (submitDeadline.after(new Date())) {
             throw new SubmitException(SubmitErrorCode.SUBMIT_TIME_OVER);
         }
 
@@ -254,9 +269,35 @@ public class ReportServiceImpl implements ReportService {
 
             e.printStackTrace();
             System.out.println("文件上传失败");
-            resMap.put("msg", "文件上传失败");
+            resMap.put("message", "文件上传失败");
 
         }
         return resMap;
+    }
+
+    public void checkTerm_Class(Integer termId, Integer classId) {
+
+        Term term = termMapper.selectByPrimaryKey(termId);
+        if (term == null) {
+            throw new SubmitException(SubmitErrorCode.TERM_NOT_EXIST);
+        }
+
+        Class classInfo = classMapper.selectByPrimaryKey(classId);
+        if (classInfo == null) {
+            throw new SubmitException(SubmitErrorCode.CLASS_NOT_EXIST);
+        }
+    }
+
+    public void checkTerm_Course(Integer termId, Integer courseId) {
+
+        Term term = termMapper.selectByPrimaryKey(termId);
+        if (term == null) {
+            throw new SubmitException(SubmitErrorCode.TERM_NOT_EXIST);
+        }
+
+        Course course = courseMapper.selectByPrimaryKey(courseId);
+        if (course == null) {
+            throw new SubmitException(SubmitErrorCode.COURSE_NOT_EXIST);
+        }
     }
 }
