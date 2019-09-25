@@ -1,17 +1,18 @@
 package com.zhy.submit.teacher.exception;
 
-import com.zhy.submit.teacher.enums.ResultEnum;
+import com.zhy.submit.teacher.enums.ResultCode;
+
 
 public class SubmitException extends RuntimeException{
-    private Integer code;
-    public SubmitException(ResultEnum resultEnum){
-        super(resultEnum.getMsg());
-        this.code=resultEnum.getCode();
+    private ResultCode code;
+    public SubmitException(ResultCode resultCode){
+        super("错误代码："+resultCode.code()+"错误信息："+resultCode.message());
+        this.code=resultCode;
 
     }
-    public SubmitException(Integer code,String message){
-        super(message);
-        this.code=code;
+    public ResultCode getResultCode(){
+        return this.code;
     }
+
 
 }

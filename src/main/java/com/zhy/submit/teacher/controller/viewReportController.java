@@ -4,6 +4,8 @@ package com.zhy.submit.teacher.controller;
 import com.zhy.submit.teacher.VO.ResultVO;
 import com.zhy.submit.teacher.dto.StudentSubmissionDTO;
 import com.zhy.submit.teacher.dto.showReportDTO;
+import com.zhy.submit.teacher.enums.ResultEnum;
+import com.zhy.submit.teacher.exception.SubmitException;
 import com.zhy.submit.teacher.service.addReportService;
 import com.zhy.submit.teacher.service.viewReportService;
 import com.zhy.submit.teacher.utils.ResultVOUtils;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +32,7 @@ public class viewReportController {
 
     //按班级显示实验报告提交情况
     @GetMapping("/view")
+    @ResponseBody
     public ResultVO viewReport(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
         List<showReportDTO> reportDTOList=addReportService.view(teacherNumber,currPage,pageSize);
         ResultVO resultVO=ResultVOUtils.success(reportDTOList);
@@ -37,6 +41,7 @@ public class viewReportController {
 
     //查看各个班级未提交学生的名单（根据 前端传过来的taskId（实验Id）+schoolClass（班级）+grade(年级)）
     @GetMapping("/unsubmitted")
+    @ResponseBody
    public ResultVO unsubmitted(@RequestParam("taskId") String taskId,@RequestParam("schoolClass") String className,@RequestParam("grade") String gradeName){
       List<StudentSubmissionDTO>submissionDTOList=  viewReportService.unsubmittedStudent(taskId, className, gradeName);
       //已提交实验报告占班级总人数的比例
@@ -50,6 +55,7 @@ public class viewReportController {
 
     //查看各个班级已提交学生名单和URL
     @GetMapping("/submitted")
+    @ResponseBody
     public ResultVO submitted(@RequestParam("taskId") String taskId){
         List<StudentSubmissionDTO> result=viewReportService.SubmittedStudent(taskId);
         int i=1;
@@ -72,7 +78,14 @@ public class viewReportController {
     //教师打分(参数studentNumber+score+taskId)
     @GetMapping("/mark")
     public Integer  mark(@RequestParam("score") double score,@RequestParam("studentNumber") String studentNumber,@RequestParam("taskId") String taskId){
-        Integer integer=viewReportService.markStudent(score,studentNumber,taskId);
+        if(score<0||score>100)
+            throw new SubmitException(ResultEnum.score_format_error);
+        Integer integer= null;
+        try {
+            integer = viewReportService.markStudent(score,studentNumber,taskId);
+        } catch (Exception e) {
+            throw new SubmitException(ResultEnum.mark_fail);
+        }
         return integer;
     }
 
@@ -80,7 +93,11 @@ public class viewReportController {
     //打包下载
     @GetMapping("/download")
     public void download(@RequestParam("taskId")String taskId,HttpServletResponse response) throws IOException {
-        viewReportService.downloadZip(taskId,response);
+        try {
+            viewReportService.downloadZip(taskId,response);
+        } catch (IOException e) {
+            throw new SubmitException(ResultEnum.download_fail);
+        }
     }
 
 }

@@ -39,7 +39,7 @@ public class addReportServiceImpl implements addReportService {
     public TeacherDTO DoLogin(TeacherDTO teacherDTO) {
         TeacherDTO dto= teacherMapper.TeacherLogin(teacherDTO.getTeacherNumber(),teacherDTO.getTeacherPassword());
         if(dto==null){
-            throw new SubmitException(ResultEnum.account_not_exit);
+            throw new SubmitException(ResultEnum.account_error);
         }
         return dto;
     }
@@ -96,14 +96,14 @@ public class addReportServiceImpl implements addReportService {
         if (!suffix .equals("doc") &&! suffix.equals("docx")) {
             resMap.put("msg", "请选择.doc或.docx文件");
             throw new SubmitException(ResultEnum.format_error);
-            //return resMap;
+
         }
         if (myfiles.getSize() > 1024 * 1024 * 20) {
             resMap.put("code", 500);
             resMap.put("msg", "文件过大，请上传20M以内的文件");
             System.out.println("文件上传失败");
             throw new SubmitException(ResultEnum.file_size_error);
-            //return new ModelAndView("success", resMap);
+
         }
         String path = request.getContextPath();
         String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
@@ -118,7 +118,6 @@ public class addReportServiceImpl implements addReportService {
             java.net.URLEncoder.encode(endPath, "UTF-8");
             resMap.put("path", endPath);
             System.out.println(resMap.get("path").toString());
-            //return resMap;
 
         } catch (IOException e) {
             resMap.put("code", "500");

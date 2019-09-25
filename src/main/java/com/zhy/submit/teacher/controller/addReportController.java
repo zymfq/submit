@@ -14,10 +14,7 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,6 +60,7 @@ public class addReportController {
    }
    //显示所有添加的实验报告
     @GetMapping("/showAddReport")
+    @ResponseBody
     public ResultVO show(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
         List<showReportDTO> showReportDTOList=addReportService.view(teacherNumber,currPage,pageSize);
         ResultVO resultVO= ResultVOUtils.success(showReportDTOList);
@@ -72,9 +70,16 @@ public class addReportController {
 
     //删除发布的实验报告信息，根据老师工号和实验名称
     @GetMapping("/cancel")
-    public ModelAndView cancel(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("experimentName") String experimentName){
-       Integer integer=addReportService.cancelReport(teacherNumber, experimentName);
-       return new ModelAndView("success");
+    @ResponseBody
+    public ResultVO cancel(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("experimentName") String experimentName){
+       Integer integer;
+        try {
+           integer=addReportService.cancelReport(teacherNumber, experimentName);
+        } catch (Exception e) {
+           throw new SubmitException(ResultEnum.delete_fail);
+        }
+
+        return ResultVOUtils.success(integer);
     }
 
 }
