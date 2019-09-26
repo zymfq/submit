@@ -18,6 +18,7 @@ public enum ResultEnum implements ResultCode  {
     mark_fail(false,2010,"打分失败"),
     download_fail(false,2011,"下载失败"),
     show_error(false,2012,"无法显示正确内容"),
+    addReport_fail(false,2013,"添加实验报告失败")
     ;
     private boolean success;
     private int code;
@@ -28,11 +29,6 @@ public enum ResultEnum implements ResultCode  {
         this.msg=msg;
     }
 
-
-    @Override
-    public boolean success() {
-        return success;
-    }
 
     @Override
     public int code() {

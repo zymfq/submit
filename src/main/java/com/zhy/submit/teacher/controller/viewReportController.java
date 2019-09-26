@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -35,7 +36,8 @@ public class viewReportController {
     @ResponseBody
     public ResultVO viewReport(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
         List<showReportDTO> reportDTOList=addReportService.view(teacherNumber,currPage,pageSize);
-        ResultVO resultVO=ResultVOUtils.success(reportDTOList);
+        Integer total=addReportService.viewCount(teacherNumber);
+        ResultVO resultVO=ResultVOUtils.success(total,reportDTOList);
         return  resultVO;
     }
 
@@ -46,10 +48,10 @@ public class viewReportController {
       List<StudentSubmissionDTO>submissionDTOList=  viewReportService.unsubmittedStudent(taskId, className, gradeName);
       //已提交实验报告占班级总人数的比例
 
-        //integer：班级总人数；List.size:已提交学生人数
+        //integer：班级总人数；total:未提交学生
          Integer integer=viewReportService.sumStudent(className, gradeName);
-        int result=submissionDTOList.size();
-      return  ResultVOUtils.success(submissionDTOList);
+        Integer total=viewReportService.unsubmittedStudentCount(taskId, className, gradeName);
+      return  ResultVOUtils.success(total,submissionDTOList);
 
     }
 
@@ -62,7 +64,8 @@ public class viewReportController {
         for(StudentSubmissionDTO a:result){
             a.setNumber(i++);
         }
-        return ResultVOUtils.success(result);
+        Integer total=viewReportService.SubmittedStudentCount(taskId);
+        return ResultVOUtils.success(total,result);
     }
 
 
@@ -77,7 +80,7 @@ public class viewReportController {
 
     //教师打分(参数studentNumber+score+taskId)
     @GetMapping("/mark")
-    public Integer  mark(@RequestParam("score") double score,@RequestParam("studentNumber") String studentNumber,@RequestParam("taskId") String taskId){
+    public ResultVO  mark(@RequestParam("score") double score,@RequestParam("studentNumber") String studentNumber,@RequestParam("taskId") String taskId){
         if(score<0||score>100)
             throw new SubmitException(ResultEnum.score_format_error);
         Integer integer= null;
@@ -86,7 +89,7 @@ public class viewReportController {
         } catch (Exception e) {
             throw new SubmitException(ResultEnum.mark_fail);
         }
-        return integer;
+        return ResultVOUtils.success(0,integer);
     }
 
 

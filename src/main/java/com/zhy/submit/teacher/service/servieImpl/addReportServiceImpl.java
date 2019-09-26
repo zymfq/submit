@@ -79,6 +79,10 @@ public class addReportServiceImpl implements addReportService {
         return noticeMapper.showTaskNotice(data);
     }
 
+    @Override
+    public Integer viewCount(String teacherNumber) {
+        return  noticeMapper.showTaskNoticeCount(teacherNumber);
+    }
     //删除实验报告
 
     @Override

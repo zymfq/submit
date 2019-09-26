@@ -52,8 +52,23 @@ class_name=#{className}
 and
 grade_id in (select grade_id from grade where grade_name=#{gradeName})
 )
-
-
+  </select>
+  <select id="unsubmitStudentInfoCount" resultType="java.lang.Integer">
+        select count(*) from
+student
+where student_number not in
+(
+select student_number from report
+where task_id=#{taskId}
+)
+and class_id=
+(
+select class_id from class
+where
+class_name=#{className}
+and
+grade_id in (select grade_id from grade where grade_name=#{gradeName})
+)
   </select>
   <select id="SubmittedStudentInfo" resultType="com.zhy.submit.teacher.dto.StudentSubmissionDTO">
     select student.student_number as studentNumber,student.student_name as studentName,report.report_path as reportPath from
@@ -64,7 +79,15 @@ select student_number from report
 where task_id=#{taskId}
 )
 </select>
-
+<select id="SubmittedStudentInfoCount" resultType="java.lang.Integer">
+   select count(*) from
+student LEFT JOIN report ON student.student_number=report.student_number
+where student.student_number in
+(
+select student_number from report
+where task_id=#{taskId}
+)
+</select>
   <select id="totalStudentNumber" resultType="java.lang.Integer">
     select count(*)
 from student
@@ -97,6 +120,21 @@ select task_id from task_notice
 where class_id=#{classId} and course_id=#{courseId} and term_id=#{termId}
 )
 group by report.student_number
+  </select>
+  <select id="AllReportAverageScoreCount" resultType="java.lang.Integer">
+
+    select count(*) FROM
+(
+    select student.student_number as studentNumber,student.student_name as studentName,avg(task_grade) as studentScore from report
+join student on student.student_number=report.student_number
+where report.task_id in
+(
+select task_id from task_notice
+where class_id=#{classId} and course_id=#{courseId} and term_id=#{termId}
+)
+group by report.student_number
+)
+as t
   </select>
   <insert id="insertSelective" parameterType="com.zhy.submit.teacher.entity.Student">
     insert into student

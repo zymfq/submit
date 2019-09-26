@@ -21,9 +21,11 @@ public interface scoreDetailService {
 
     //按班级显示老师所有课程
     public List<AverageScoreOfCourseDTO> showByCourse(String teacherNumber);
+    public Integer showByCourseCount(String teacherNumber);
 
     //班级学生每门课程所有实验平均分
     public List<StudentSubmissionDTO> AllExperimentAverageScore(int classId,int courseId,int termId);
+    public Integer AllExperimentAverageScoreCount(int classId,int courseId,int termId);
 
 
 

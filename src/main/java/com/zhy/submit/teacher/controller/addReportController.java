@@ -30,7 +30,7 @@ public class addReportController {
    addReportService addReportService;
     //添加实验报告
    @PostMapping("/add")
-    public ModelAndView addReport(@Valid addReportForm addForm,
+    public void addReport(@Valid addReportForm addForm,
                                   BindingResult bindingResult,
                                   HttpServletRequest request,
                                   HttpServletResponse response){
@@ -55,15 +55,20 @@ public class addReportController {
         Integer inte=addReportService.getCourseId(addDTO.getCourse());
         addDTO.setCourseId(inte);
         //添加
-        addReportService.add(addDTO);
-       return new ModelAndView("success");
+       try {
+           addReportService.add(addDTO);
+       } catch (Exception e) {
+           throw new SubmitException(ResultEnum.addReport_fail);
+       }
+
    }
    //显示所有添加的实验报告
     @GetMapping("/showAddReport")
     @ResponseBody
     public ResultVO show(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
         List<showReportDTO> showReportDTOList=addReportService.view(teacherNumber,currPage,pageSize);
-        ResultVO resultVO= ResultVOUtils.success(showReportDTOList);
+        Integer total=addReportService.viewCount(teacherNumber);
+        ResultVO resultVO= ResultVOUtils.success(total,showReportDTOList);
         return  resultVO;
     }
     //编辑已发布的实验报告信息
@@ -79,7 +84,7 @@ public class addReportController {
            throw new SubmitException(ResultEnum.delete_fail);
         }
 
-        return ResultVOUtils.success(integer);
+        return ResultVOUtils.success(0,integer);
     }
 
 }

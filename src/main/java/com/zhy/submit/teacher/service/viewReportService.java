@@ -21,9 +21,11 @@ public interface viewReportService {
 
     //未提交实验报告的学生信息
     public List<StudentSubmissionDTO> unsubmittedStudent(String taskId,String className,String gradeName);
+    public Integer unsubmittedStudentCount(String taskId,String className,String gradeName);
 
     //已提交实验报告的学生信息（姓名+学号+path）
     public List<StudentSubmissionDTO> SubmittedStudent(String taskId);
+    public Integer SubmittedStudentCount(String taskId);
 
 
     //打分

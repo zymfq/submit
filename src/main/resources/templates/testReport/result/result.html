@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查看实验报告</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../css/add.css">
+</head>
+<body>
+
+
+<table id="demo" lay-filter="test1"></table>
+<script type="text/html" id="barDemo">
+
+    <a class="layui-btn layui-btn-xs" lay-event="showSubmitDetail">查看</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="downloadFiles">下载</a>
+</script>
+
+
+<script src="../../../static/layui/layui.js"></script>
+<script src="../../../static/layui/layui.all.js"></script>
+
+<script>
+layui.use('table', function(){
+var table = layui.table;
+
+//第一个实例
+table.render({
+elem: '#demo'
+,height: 312
+,url: '../demol.json' //数据接口
+,page: true //开启分页
+,cols: [[ //表头
+{field: 'id', title: '序号', width:180, fixed: 'left'}
+,{field: 'sex', title: '学期', width:180}
+,{field: 'username', title: '班级名称', width:180}
+,{field: 'city', title: '课程名称', width:180}
+,{field: 'classify', title: '班级平均分', width: 180}
+,{fixed: 'right', title: '操作',width:250, align:'center', toolbar: '#barDemo'} //这里的toolbar值是模板元素的选择器
+]]
+});
+
+});
+//监听工具条
+table.on('tool(test1)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+var data = obj.data; //获得当前行数据
+var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+if(layEvent === 'showSubmitDetail'){ //查看未提交学生的名单
+
+} else if(layEvent === 'downloadFiles'){ //下载学生提交的实验报告
+window.location.href = `/zipFileDownload?term_id=${obj.data.term_sequence}&&experimentId=${obj.data.id}&&experimentName=${obj.data.experiment_name}&&courseName=${obj.data.course_name}&&className=${obj.data.class_name}`
+
+} else if(layEvent === 'LAYTABLE_TIPS'){
+layer.alert('Hi，头部工具栏扩展的右侧图标。');
+}
+});
+</script>
+</body>
+</html>

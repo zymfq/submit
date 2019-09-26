@@ -55,14 +55,21 @@ public class viewReportServiceImpl implements viewReportService {
         return studentMapper.unsubmitStudentInfo(taskId, className, gradeName);
     }
 
+    @Override
+    public Integer unsubmittedStudentCount(String taskId, String className, String gradeName) {
+        return studentMapper.unsubmitStudentInfoCount(taskId, className, gradeName);
+    }
+
     //已提交实验报告的学生信息
     @Override
     public List<StudentSubmissionDTO> SubmittedStudent(String taskId) {
         return  studentMapper.SubmittedStudentInfo(taskId);
     }
 
-
-
+    @Override
+    public Integer SubmittedStudentCount(String taskId) {
+        return  studentMapper.SubmittedStudentInfoCount(taskId);
+    }
 
     //将上传的Word文档转成PDF,通过输出流响应到页面
     @Override
@@ -125,6 +132,7 @@ public class viewReportServiceImpl implements viewReportService {
         downloadZipUtils utils=new downloadZipUtils();
         utils.downloadZip(zipBasePath,zipName,filePaths,response);
         return  true;
+
 
 
 

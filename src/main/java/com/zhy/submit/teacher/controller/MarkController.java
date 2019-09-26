@@ -6,13 +6,16 @@ import com.zhy.submit.teacher.dto.StudentSubmissionDTO;
 import com.zhy.submit.teacher.dto.showReportDTO;
 import com.zhy.submit.teacher.enums.ResultEnum;
 import com.zhy.submit.teacher.exception.SubmitException;
+import com.zhy.submit.teacher.service.addReportService;
 import com.zhy.submit.teacher.service.scoreDetailService;
+import com.zhy.submit.teacher.service.viewReportService;
 import com.zhy.submit.teacher.utils.ResultVOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -21,9 +24,14 @@ import java.util.List;
 public class MarkController {
     @Autowired
     scoreDetailService scoreDetailService;
+    @Autowired
+    addReportService addReportService;
+    @Autowired
+    viewReportService viewReportService;
 
     //show班级平均分
     @GetMapping("/average")
+    @ResponseBody
     public ResultVO average(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
         List<showReportDTO> list= null;
         try {
@@ -31,12 +39,14 @@ public class MarkController {
         } catch (Exception e) {
             throw  new SubmitException(ResultEnum.show_error);
         }
-        ResultVO res= ResultVOUtils.success(list);
-        return  res;
+        Integer total=addReportService.viewCount(teacherNumber);
+        return  ResultVOUtils.success(total,list);
+
     }
 
     //班级学生每门课程每门实验成绩详情
     @GetMapping("/detail")
+    @ResponseBody
     public ResultVO detail(@RequestParam("taskId") String taskId){
         List<StudentSubmissionDTO> list= null;
         try {
@@ -44,7 +54,9 @@ public class MarkController {
         } catch (Exception e) {
             throw new SubmitException(ResultEnum.show_error);
         }
-        ResultVO resultVO=ResultVOUtils.success(list);
+        Integer total= viewReportService.SubmittedStudentCount(taskId);
+        ResultVO resultVO=ResultVOUtils.success(total,list);
+
         return resultVO;
 
     }
@@ -52,6 +64,7 @@ public class MarkController {
 
     //按班级显示老师所有课程
     @GetMapping("/course")
+    @ResponseBody
     public ResultVO course(@RequestParam("teacherNumber") String teacherNumber){
         List<AverageScoreOfCourseDTO> res= null;
         try {
@@ -59,10 +72,12 @@ public class MarkController {
         } catch (Exception e) {
             throw new SubmitException(ResultEnum.show_error);
         }
-        return ResultVOUtils.success(res);
+        Integer total=scoreDetailService.showByCourseCount(teacherNumber);
+        return ResultVOUtils.success(total,res);
     }
     //班级学生每门课程所有实验平均分
     @GetMapping("/AllAverage")
+    @ResponseBody
     public ResultVO AllAverage(@RequestParam("classId") int classId,@RequestParam("courseId") int courseId,@RequestParam("termId") int termId){
         List<StudentSubmissionDTO> res= null;
         try {
@@ -70,7 +85,8 @@ public class MarkController {
         } catch (Exception e) {
             throw new SubmitException(ResultEnum.show_error);
         }
-        return  ResultVOUtils.success(res);
+        Integer total=scoreDetailService.AllExperimentAverageScoreCount(classId, courseId, termId);
+        return  ResultVOUtils.success(total,res);
     }
 
 

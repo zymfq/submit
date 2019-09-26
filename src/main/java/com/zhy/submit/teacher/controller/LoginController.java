@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -24,15 +26,20 @@ import java.util.Map;
 public class LoginController {
     @Autowired
     addReportService addReportService;
-    @RequestMapping("/login")
+
+    @RequestMapping("/index")
     public String index(){
+        return "index";
+    }
+    @RequestMapping("/login")
+    public String login(){
 
         return "login";
     }
     //教师登录
     @PostMapping("/loginCheck")
     @ResponseBody
-    public ResultVO login(@RequestParam("teacherNumber") String number, @RequestParam("password") String password, Map<String,Object> map, HttpServletRequest request){
+    public ResultVO login(@RequestParam("teacherNumber") String number, @RequestParam("password") String password, HttpServletRequest request){
         if (number.equals(""))
             throw new SubmitException(ResultEnum.number_isnull);
         if(password.equals(""))
@@ -50,10 +57,12 @@ public class LoginController {
         } catch (Exception e) {
            throw new SubmitException(ResultEnum.account_error);
         }
-        map.put("教师工号",teacherDTO1.getTeacherNumber());
-        map.put("教师姓名",teacherDTO1.getTeacherName());
+
+        List<Object> list=new ArrayList<>();
+        list.add(teacherDTO1.getTeacherNumber());
+        list.add(teacherDTO1.getTeacherName());
         System.out.println(teacherDTO1.getTeacherName());
-        return ResultVOUtils.success(map);
+        return ResultVOUtils.success(1,list);
 
     }
 }

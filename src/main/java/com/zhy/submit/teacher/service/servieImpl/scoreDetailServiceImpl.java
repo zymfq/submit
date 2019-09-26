@@ -54,10 +54,19 @@ public class scoreDetailServiceImpl implements scoreDetailService {
        return noticeMapper.viewByCourse(teacherNumber);
     }
 
+    @Override
+    public Integer showByCourseCount(String teacherNumber) {
+        return noticeMapper.viewByCourseCount(teacherNumber);
+    }
     //班级学生每门课程所有实验平均分
 
     @Override
     public List<StudentSubmissionDTO> AllExperimentAverageScore(int classId, int courseId, int termId) {
         return studentMapper.AllReportAverageScore(classId, courseId, termId);
+    }
+
+    @Override
+    public Integer AllExperimentAverageScoreCount(int classId, int courseId, int termId) {
+        return  studentMapper.AllReportAverageScoreCount(classId, courseId, termId);
     }
 }

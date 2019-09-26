@@ -18,6 +18,7 @@ public interface taskNoticeMapper {
     Integer addTaskNotice(addReportDTO addDTO);
     //查询所有实验报告
     List<showReportDTO> showTaskNotice(Map<String,Object> data);
+    Integer showTaskNoticeCount(String teacherNumber );
     //删除实验报告
     Integer deleteReport(String teacherNumber,String experimentName);
     int deleteByPrimaryKey(Integer id);
@@ -27,6 +28,7 @@ public interface taskNoticeMapper {
 
     //按班级展示老师所有课程
     List<AverageScoreOfCourseDTO> viewByCourse(String teacherNumber);
+    Integer viewByCourseCount(String teacherNumber);
     int insert(taskNotice record);
 
     int insertSelective(taskNotice record);

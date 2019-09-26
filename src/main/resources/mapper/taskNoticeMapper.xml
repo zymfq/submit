@@ -28,6 +28,14 @@ LEFT JOIN course ON task_notice.course_id=course.course_id
 where task_notice.teacher_number=#{teacherNumber}
 limit #{currIndex},#{pageSize}
   </select>
+  <select id="showTaskNoticeCount" resultType="java.lang.Integer">
+    select count(*) from
+task_notice LEFT JOIN term ON task_notice.term_id=term.term_id
+LEFT JOIN grade ON grade.grade_id=term.grade_id
+LEFT JOIN class ON task_notice.class_id=class.class_id
+LEFT JOIN course ON task_notice.course_id=course.course_id
+where task_notice.teacher_number=#{teacherNumber}
+  </select>
   <insert id="addTaskNotice" parameterType="com.zhy.submit.teacher.dto.addReportDTO"  >
     insert into task_notice (task_id,term_id,class_id,teacher_number,task_name,course_id,task_path,submit_deadline)values( #{taskId},#{termId},#{classId},#{teacherNumber},#{experimentName},#{courseId},#{taskPath},#{submitDeadline})
   </insert>
@@ -48,7 +56,7 @@ where task_notice.task_id=#{taskId}
 
   </select>
   <select id="viewByCourse" resultType="com.zhy.submit.teacher.dto.AverageScoreOfCourseDTO">
-   select DISTINCT term.study_year as studyYear,term.term_name as termName,term.term_id as termId,
+  select DISTINCT term.study_year as studyYear,term.term_name as termName,term.term_id as termId,
        grade.grade_name as gradeName,
        class.class_name as className,
        class.class_id as className,
@@ -59,6 +67,14 @@ task_notice JOIN term ON task_notice.term_id=term.term_id
  JOIN course ON task_notice.course_id=course.course_id
 where task_notice.teacher_number=#{teacherNumber}
 
+  </select>
+  <select id="viewByCourseCount" resultType="java.lang.Integer">
+     select DISTINCT count(*) from
+task_notice JOIN term ON task_notice.term_id=term.term_id
+ JOIN grade ON grade.grade_id=term.grade_id
+ JOIN class ON task_notice.class_id=class.class_id
+ JOIN course ON task_notice.course_id=course.course_id
+where task_notice.teacher_number=#{teacherNumber}
   </select>
   <insert id="insertSelective" parameterType="com.zhy.submit.teacher.entity.taskNotice">
     insert into task_notice
