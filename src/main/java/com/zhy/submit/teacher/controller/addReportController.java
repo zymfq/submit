@@ -70,6 +70,7 @@ public class addReportController {
         Integer total=addReportService.viewCount(teacherNumber);
         ResultVO resultVO= ResultVOUtils.success(total,showReportDTOList);
         return  resultVO;
+
     }
     //编辑已发布的实验报告信息
 
