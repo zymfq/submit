@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑实验报告</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../css/add.css">
+</head>
+<body>
+
+<div class="Experimental_information" style="borderWidth: 20px ">
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend>实验信息填写</legend>
+    </fieldset>
+    <div class="Experimental_information">
+        <form class="layui-form layui-form-pane" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">学年</label>
+                <div class="layui-input-inline">
+                    <select name="quiz1" lay-filter="selectYear">
+                        <option value="">年份</option>
+                        <option value="16">2016-2017</option>
+                        <option value="17">2017-2018</option>
+                        <option value="18">2018-2019</option>
+                        <option value="19">2019-2020</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="quiz2" lay-filter="selectTerm">
+                        <option value="">学期</option>
+                        <option value="1">第一学期</option>
+                        <option value="2">第二学期</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">班级信息</label>
+                <div class="layui-input-inline">
+                    <select lay-filter="selectGrade">
+                        <option value="">请选择年级</option>
+                        <option value="15">15级</option>
+                        <option value="16">16级</option>
+                        <option value="17">17级</option>
+                        <option value="18">18级</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select id="classSelector" lay-filter="selectClass">
+                        <option value="">请选择班级</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">课程</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="courseName" autocomplete="off" class="layui-input"
+                               placeholder="输入课程名,如：大学英语">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">实验名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="operationName" autocomplete="off" class="layui-input"
+                               placeholder="输入实验名称">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">截止日期</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="test1" placeholder="yyyy-MM-dd">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn" lay-submit="" lay-filter="allRight">添加</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+</script>
+<script src="../../../static/layui/layui.js"></script>
+<script src="../../../static/layui/layui.all.js"></script>
+<script>
+layui.use('laydate', function(){
+   var laydate = layui.laydate
+  //常规用法
+  laydate.render({
+    elem: '#test1'
+  });
+  })
+ </script>
+</body>
+</html>
