@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>添加实验报告</title>
+    <title>查看实验报告</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -14,9 +14,9 @@
 
 <table id="demo" lay-filter="test"></table>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="">评分</a>
-    <a class="layui-btn layui-btn-xs" lay-event="">查看</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="">下载</a>
+    <a class="layui-btn layui-btn-xs" lay-event="grade">评分</a>
+    <a class="layui-btn layui-btn-xs" lay-event="check">查看</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="download">下载</a>
 </script>
 
 
@@ -45,31 +45,27 @@ layui.use('table', function(){
     ]]
   });
 
-});
 //监听工具条
 table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
   var data = obj.data; //获得当前行数据
   var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
   var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
-  if(layEvent === 'del'){ //删除
-    layer.confirm('真的删除行么', function(index){
-      obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-      layer.close(index);
-      //向服务端发送删除指令
-    });
-  } else if(layEvent === 'edit'){ //编辑
-
-    //do something
-
-    //同步更新缓存对应的值
-    obj.update({
-      username: '123'
-      ,title: 'xxx'
-    });
-  } else if(layEvent === 'LAYTABLE_TIPS'){
-    layer.alert('Hi，头部工具栏扩展的右侧图标。');
-  }
+  if(obj.event === 'detail'){
+      layer.msg('ID：'+ data.id + ' 的查看操作');
+    } else if(obj.event === 'del'){
+      layer.confirm('真的删除行么', function(index){
+        obj.del();
+        layer.close(index);
+      });
+    } else if(obj.event === 'grade'){
+      layer.open({
+                    type: 2,
+                    area: ['750px','450px'],
+                    content:'grade.html'
+                    });
+    }
+});
 });
 </script>
 
