@@ -9,12 +9,10 @@ import com.zhy.submit.teacher.exception.SubmitException;
 import com.zhy.submit.teacher.service.addReportService;
 import com.zhy.submit.teacher.service.viewReportService;
 import com.zhy.submit.teacher.utils.ResultVOUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +21,8 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
+//解除跨域访问的限制
+@CrossOrigin(origins = "*")
 @RequestMapping("/viewReport")
 public class viewReportController {
     @Autowired
@@ -34,7 +34,8 @@ public class viewReportController {
     //按班级显示实验报告提交情况
     @GetMapping("/view")
     @ResponseBody
-    public ResultVO viewReport(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
+    //@RequiresPermissions("submit:viewReport:view")
+    public ResultVO viewReport(@RequestParam("page") int currPage,@RequestParam("limit") int pageSize,@RequestParam("teacherNumber") String teacherNumber){
         List<showReportDTO> reportDTOList=addReportService.view(teacherNumber,currPage,pageSize);
         Integer total=addReportService.viewCount(teacherNumber);
         ResultVO resultVO=ResultVOUtils.success(total,reportDTOList);

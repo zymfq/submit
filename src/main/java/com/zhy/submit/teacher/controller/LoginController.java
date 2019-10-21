@@ -9,10 +9,7 @@ import com.zhy.submit.teacher.utils.ResultVOUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,20 +19,12 @@ import java.util.Map;
 
 @Controller
 @Slf4j
+@CrossOrigin(origins = "*")
 @RequestMapping("/teacher")
 public class LoginController {
     @Autowired
     addReportService addReportService;
 
-    @RequestMapping("/index")
-    public String index(){
-        return "index";
-    }
-    @RequestMapping("/login")
-    public String login(){
-
-        return "login";
-    }
     //教师登录
     @PostMapping("/loginCheck")
     @ResponseBody
@@ -52,7 +41,6 @@ public class LoginController {
         session.setAttribute("teacherNumber",number);
         TeacherDTO teacherDTO1= null;
         try {
-
             teacherDTO1 = addReportService.DoLogin(teacherDTO);
         } catch (Exception e) {
            throw new SubmitException(ResultEnum.account_error);
@@ -65,4 +53,5 @@ public class LoginController {
         return ResultVOUtils.success(1,list);
 
     }
+    //
 }

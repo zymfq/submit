@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@CrossOrigin(origins = "*")
 @RequestMapping("/addReport")
 public class addReportController {
     @Autowired
@@ -63,15 +64,10 @@ public class addReportController {
 
    }
    //显示所有添加的实验报告
-    @GetMapping("/showAddReport")
-    @ResponseBody
-    public ResultVO show(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
-        List<showReportDTO> showReportDTOList=addReportService.view(teacherNumber,currPage,pageSize);
-        Integer total=addReportService.viewCount(teacherNumber);
-        ResultVO resultVO= ResultVOUtils.success(total,showReportDTOList);
-        return  resultVO;
-
-    }
+   @RequestMapping("/result")
+   public String result(){
+       return "testReport/result/result";
+   }
     //编辑已发布的实验报告信息
 
     //删除发布的实验报告信息，根据老师工号和实验名称

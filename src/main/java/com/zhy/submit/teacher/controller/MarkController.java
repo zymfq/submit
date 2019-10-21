@@ -12,14 +12,12 @@ import com.zhy.submit.teacher.service.viewReportService;
 import com.zhy.submit.teacher.utils.ResultVOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
+@CrossOrigin(origins = "*")
 @RequestMapping("/mark")
 public class MarkController {
     @Autowired
@@ -32,7 +30,7 @@ public class MarkController {
     //show班级平均分
     @GetMapping("/average")
     @ResponseBody
-    public ResultVO average(@RequestParam("teacherNumber") String teacherNumber,@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize){
+    public ResultVO average(@RequestParam("currPage") int currPage,@RequestParam("pageSize") int pageSize,@RequestParam("teacherNumber") String teacherNumber){
         List<showReportDTO> list= null;
         try {
             list = scoreDetailService.AverageScore(teacherNumber,currPage,pageSize);
@@ -73,7 +71,7 @@ public class MarkController {
             throw new SubmitException(ResultEnum.show_error);
         }
         Integer total=scoreDetailService.showByCourseCount(teacherNumber);
-        return ResultVOUtils.success(total,res);
+        return ResultVOUtils.success(4,res);
     }
     //班级学生每门课程所有实验平均分
     @GetMapping("/AllAverage")
@@ -88,7 +86,6 @@ public class MarkController {
         Integer total=scoreDetailService.AllExperimentAverageScoreCount(classId, courseId, termId);
         return  ResultVOUtils.success(total,res);
     }
-
-
+    //
 
 }

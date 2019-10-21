@@ -23,10 +23,12 @@ public class WebConfigurer implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(staticAccessPath).addResourceLocations("file:"+uploadFolder);
         /*registry.addResourceHandler(staticAccessPath).addResourceLocations("file:"+previewPDF);*/
+
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         /*registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns("/teacher/login");*/
     }
+
 }
