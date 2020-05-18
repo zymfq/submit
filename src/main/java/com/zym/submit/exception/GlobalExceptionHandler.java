@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public CommonReturnType doError(Exception ex) {
 
-        ex.printStackTrace();
+        ex.printStackTrace();   //这里可以让他显示错误的异常信息，便于开发
 
         if (ex instanceof SubmitException) {
             SubmitException submitException = (SubmitException) ex;

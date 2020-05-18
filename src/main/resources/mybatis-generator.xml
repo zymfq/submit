@@ -63,9 +63,9 @@
         <table  tableName="course" domainObjectName="Course" ></table>
         <table  tableName="grade" domainObjectName="Grade" ></table>
         <table  tableName="report" domainObjectName="Report" ></table>
-        <table  tableName="task_notice" domainObjectName="TaskNotice" ></table>
         <table  tableName="teacher" domainObjectName="Teacher" ></table>
         <table  tableName="term" domainObjectName="Term" ></table>
         <table  tableName="student" domainObjectName="Student" ></table>-->
+        <table  tableName="task_notice" domainObjectName="TaskNotice" ></table>
     </context>
 </generatorConfiguration>

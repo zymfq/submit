@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zym.submit.mapper.TaskNoticeMapper">
   <resultMap id="BaseResultMap" type="com.zym.submit.entity.TaskNotice">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="task_id" jdbcType="INTEGER" property="taskId" />
+    <id column="task_id" jdbcType="INTEGER" property="taskId" />
     <result column="term_id" jdbcType="INTEGER" property="termId" />
     <result column="class_id" jdbcType="INTEGER" property="classId" />
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
@@ -74,8 +73,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, task_id, term_id, class_id, task_name, course_id, teacher_number, task_path, 
-    is_valid, submit_deadline, create_time, update_time
+    task_id, term_id, class_id, task_name, course_id, teacher_number, task_path, is_valid, 
+    submit_deadline, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.zym.submit.entity.entityExample.TaskNoticeExample" resultMap="BaseResultMap">
     select
@@ -95,11 +94,11 @@
     select 
     <include refid="Base_Column_List" />
     from task_notice
-    where id = #{id,jdbcType=INTEGER}
+    where task_id = #{taskId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from task_notice
-    where id = #{id,jdbcType=INTEGER}
+    where task_id = #{taskId,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.zym.submit.entity.entityExample.TaskNoticeExample">
     delete from task_notice
@@ -108,23 +107,18 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.zym.submit.entity.TaskNotice">
-    insert into task_notice (id, task_id, term_id, 
-      class_id, task_name, course_id, 
-      teacher_number, task_path, is_valid, 
-      submit_deadline, create_time, update_time
-      )
-    values (#{id,jdbcType=INTEGER}, #{taskId,jdbcType=INTEGER}, #{termId,jdbcType=INTEGER}, 
-      #{classId,jdbcType=INTEGER}, #{taskName,jdbcType=VARCHAR}, #{courseId,jdbcType=INTEGER}, 
-      #{teacherNumber,jdbcType=VARCHAR}, #{taskPath,jdbcType=VARCHAR}, #{isValid,jdbcType=TINYINT}, 
-      #{submitDeadline,jdbcType=DATE}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+    insert into task_notice (task_id, term_id, class_id, 
+      task_name, course_id, teacher_number, 
+      task_path, is_valid, submit_deadline, 
+      create_time, update_time)
+    values (#{taskId,jdbcType=INTEGER}, #{termId,jdbcType=INTEGER}, #{classId,jdbcType=INTEGER}, 
+      #{taskName,jdbcType=VARCHAR}, #{courseId,jdbcType=INTEGER}, #{teacherNumber,jdbcType=VARCHAR}, 
+      #{taskPath,jdbcType=VARCHAR}, #{isValid,jdbcType=TINYINT}, #{submitDeadline,jdbcType=DATE}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.zym.submit.entity.TaskNotice">
     insert into task_notice
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="taskId != null">
         task_id,
       </if>
@@ -160,9 +154,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="taskId != null">
         #{taskId,jdbcType=INTEGER},
       </if>
@@ -207,9 +198,6 @@
   <update id="updateByExampleSelective" parameterType="map">
     update task_notice
     <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
-      </if>
       <if test="record.taskId != null">
         task_id = #{record.taskId,jdbcType=INTEGER},
       </if>
@@ -250,8 +238,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update task_notice
-    set id = #{record.id,jdbcType=INTEGER},
-      task_id = #{record.taskId,jdbcType=INTEGER},
+    set task_id = #{record.taskId,jdbcType=INTEGER},
       term_id = #{record.termId,jdbcType=INTEGER},
       class_id = #{record.classId,jdbcType=INTEGER},
       task_name = #{record.taskName,jdbcType=VARCHAR},
@@ -269,9 +256,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.zym.submit.entity.TaskNotice">
     update task_notice
     <set>
-      <if test="taskId != null">
-        task_id = #{taskId,jdbcType=INTEGER},
-      </if>
       <if test="termId != null">
         term_id = #{termId,jdbcType=INTEGER},
       </if>
@@ -303,12 +287,11 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where task_id = #{taskId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.zym.submit.entity.TaskNotice">
     update task_notice
-    set task_id = #{taskId,jdbcType=INTEGER},
-      term_id = #{termId,jdbcType=INTEGER},
+    set term_id = #{termId,jdbcType=INTEGER},
       class_id = #{classId,jdbcType=INTEGER},
       task_name = #{taskName,jdbcType=VARCHAR},
       course_id = #{courseId,jdbcType=INTEGER},
@@ -318,6 +301,6 @@
       submit_deadline = #{submitDeadline,jdbcType=DATE},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    where task_id = #{taskId,jdbcType=INTEGER}
   </update>
 </mapper>

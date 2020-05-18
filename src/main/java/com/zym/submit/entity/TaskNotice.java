@@ -6,8 +6,6 @@ import java.util.Date;
 @Data
 public class TaskNotice {
 
-    private Integer id;
-
     private Integer taskId;
 
     private Integer termId;

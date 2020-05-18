@@ -1,5 +1,6 @@
 package com.zym.submit.mapper;
 
+import com.zym.submit.dto.DownloadReportDTO;
 import com.zym.submit.entity.TaskNotice;
 import com.zym.submit.entity.entityExample.TaskNoticeExample;
 import java.util.List;
@@ -10,7 +11,7 @@ public interface TaskNoticeMapper {
 
     int deleteByExample(TaskNoticeExample example);
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer taskId);
 
     int insert(TaskNotice record);
 
@@ -18,7 +19,7 @@ public interface TaskNoticeMapper {
 
     List<TaskNotice> selectByExample(TaskNoticeExample example);
 
-    TaskNotice selectByPrimaryKey(Integer id);
+    TaskNotice selectByPrimaryKey(Integer taskId);
 
     int updateByExampleSelective(@Param("record") TaskNotice record, @Param("example") TaskNoticeExample example);
 
@@ -27,4 +28,5 @@ public interface TaskNoticeMapper {
     int updateByPrimaryKeySelective(TaskNotice record);
 
     int updateByPrimaryKey(TaskNotice record);
+
 }

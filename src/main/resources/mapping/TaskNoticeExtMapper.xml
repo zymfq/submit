@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zym.submit.mapper.TaskNoticeExtMapper">
     <resultMap id="BaseResultMap" type="com.zym.submit.entity.TaskNotice">
-        <id column="id" jdbcType="INTEGER" property="id"/>
-        <result column="task_id" jdbcType="INTEGER" property="taskId"/>
+        <id column="task_id" jdbcType="INTEGER" property="taskId"/>
         <result column="term_id" jdbcType="INTEGER" property="termId"/>
         <result column="class_id" jdbcType="INTEGER" property="classId"/>
         <result column="task_name" jdbcType="VARCHAR" property="taskName"/>
@@ -15,9 +14,25 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
+    <resultMap id="map" type="com.zym.submit.entity.Term">
+        <result column="study_year" jdbcType="VARCHAR" property="studyYear" />
+        <result column="term_name" jdbcType="TINYINT" property="termName" />
+    </resultMap>
+
+    <resultMap id="map2" type="com.zym.submit.entity.Course">
+        <result column="course_name" jdbcType="VARCHAR" property="courseName" />
+    </resultMap>
+
+    <resultMap id="map3" type="com.zym.submit.entity.Grade">
+        <result column="grade_name" jdbcType="VARCHAR" property="gradeName" />
+    </resultMap>
+
+    <resultMap id="map4" type="com.zym.submit.entity.Class">
+        <result column="class_name" jdbcType="VARCHAR" property="className" />
+    </resultMap>
 
     <sql id="Base_Column_List">
-        id, task_id, term_id, class_id, task_name, course_id, teacher_number, task_path,
+        task_id, term_id, class_id, task_name, course_id, teacher_number, task_path,
         is_valid, submit_deadline, create_time, update_time
    </sql>
     <select id="selectByTaskId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -26,4 +41,19 @@
         from task_notice
         where task_id = #{taskId,jdbcType=INTEGER}
     </select>
+
+    <select id="getZipName" resultType="com.zym.submit.dto.DownloadReportDTO">
+    select term.study_year,term.term_name,grade.grade_name,class.class_name,course.course_name,t.task_name from
+    task_notice t LEFT JOIN term ON
+    t.term_id=term.term_id
+    LEFT JOIN grade ON
+    grade.grade_id=term.grade_id
+    LEFT JOIN class ON
+    t.class_id=class.class_id
+    LEFT JOIN course ON
+    t.course_id=course.course_id
+    where t.task_id=#{taskId}
+
+  </select>
+
 </mapper>

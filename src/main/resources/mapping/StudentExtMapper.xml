@@ -12,6 +12,9 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
+    <resultMap extends="BaseResultMap" id="reportMap" type="com.zym.submit.entity.Report">
+        <result property="reportPath" column="report_path"></result>
+    </resultMap>
 
     <sql id="Base_Column_List">
     student_id, student_number, student_name, student_password, student_sex, class_id,
@@ -24,5 +27,13 @@
         from student
         where student_number = #{studentNumber,jdbcType=VARCHAR}
     </select>
+
+    <select id="SubmittedStudentInfo" resultType="com.zym.submit.dto.StudentSubmissionDTO">
+    select s.student_number,student_name ,report_path from
+    student s LEFT JOIN report r ON
+    s.student_number=r.student_number where
+    task_id=#{taskId}
+
+</select>
 
 </mapper>

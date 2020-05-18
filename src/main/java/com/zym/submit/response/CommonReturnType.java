@@ -13,7 +13,7 @@ public class CommonReturnType<T> {
 
     private String message;
 
-    private Integer count=1000;
+    private Integer count=100;
 
     private T data;
 
@@ -26,7 +26,7 @@ public class CommonReturnType<T> {
 
     public static CommonReturnType okOf(){
         CommonReturnType commonReturnType = new CommonReturnType();
-        commonReturnType.setCode(200);
+        commonReturnType.setCode(0);
         commonReturnType.setMessage("请求成功！！！");
         return commonReturnType;
     }
@@ -34,7 +34,7 @@ public class CommonReturnType<T> {
 
     public static <T>CommonReturnType okOf(T t){
         CommonReturnType commonReturnType = new CommonReturnType();
-        commonReturnType.setCode(200);
+        commonReturnType.setCode(0);
         commonReturnType.setMessage("请求成功！！！");
         commonReturnType.setData(t);
         return commonReturnType;

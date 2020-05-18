@@ -19,12 +19,12 @@ public class UploadFilePathConfig implements WebMvcConfigurer {
     @Value("${file.uploadFolder}")
     private String uploadFolder;
 
-    @Value("${file.previewPDF}")
-    private String previewPDF;
+//    @Value("${file.previewPDF}")
+//    private String previewPDF;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(staticAccessPath).addResourceLocations("file:"+uploadFolder);
-        registry.addResourceHandler(staticAccessPath).addResourceLocations("file:"+previewPDF);
+//        registry.addResourceHandler(staticAccessPath).addResourceLocations("file:"+previewPDF);
     }
 }

@@ -2,7 +2,6 @@ package com.zym.submit.controller;
 
 import com.zym.submit.dto.ReportDTO;
 import com.zym.submit.dto.TaskDTO;
-import com.zym.submit.mapper.StudentExtMapper;
 import com.zym.submit.response.CommonReturnType;
 import com.zym.submit.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,6 @@ import java.util.Map;
 @Slf4j
 public class ReportController {
 
-
     @Autowired
     private ReportService reportService;
 
@@ -45,6 +43,12 @@ public class ReportController {
         return "upload";
     }
 
+    /**
+     * 本地测试提交实验报告
+     * @param file
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/uploadtest")
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile file) throws IOException {
@@ -53,7 +57,11 @@ public class ReportController {
         }
         try {
             String fileName = file.getOriginalFilename();
-            String filePath = "F:\\Test";
+            //String filePath = "F:\\Test";
+            File filePath = new File("F:\\Test");
+            if(!filePath.exists()  && !filePath.isDirectory()){
+                filePath.mkdir();
+            }
             File newFile = new File(filePath, fileName);
             InputStream inputStream = file.getInputStream();
             FileOutputStream fileOutputStream = new FileOutputStream(newFile);
@@ -77,10 +85,29 @@ public class ReportController {
      */
     @GetMapping("/list")
     @ResponseBody
-    public CommonReturnType listReport(@RequestParam(name = "studentNumber") String studentNumber,
-                                       @RequestParam(name = "pageNum")Integer pageNum,
-                                       @RequestParam(name = "pageSize")Integer pageSize){
+    public CommonReturnType listReport(@RequestParam(name = "studentNumber",defaultValue = "001") String studentNumber,
+                                       @RequestParam(name = "page" ,defaultValue = "1")Integer pageNum,
+                                       @RequestParam(name = "limit",defaultValue = "5")Integer pageSize){
 
+        System.out.println("pageNUm"+pageNum);
+        System.out.println(pageSize);
+        List<ReportDTO> reportDTOList = reportService.listReport(studentNumber,pageNum, pageSize);
+        return CommonReturnType.okOf(reportDTOList);
+    }
+
+    /**
+     * 查询所有已提交试验报告
+     * @param studentNumber
+     * @return
+     */
+    @GetMapping("/listall")
+    @ResponseBody
+    public CommonReturnType listAllReport(@RequestParam(name = "studentNumber") String studentNumber,
+                                       @RequestParam(name = "page")Integer pageNum,
+                                       @RequestParam(name = "limit")Integer pageSize){
+
+        System.out.println("pageNUm"+pageNum);
+        System.out.println(pageSize);
         List<ReportDTO> reportDTOList = reportService.listReport(studentNumber,pageNum, pageSize);
         return CommonReturnType.okOf(reportDTOList);
     }
@@ -128,10 +155,9 @@ public class ReportController {
     @GetMapping("list_not_submit")
     @ResponseBody
     public CommonReturnType listReportByNotSubmit(@RequestParam(name = "studentNumber")String studentNumber,
-                                                  @RequestParam(name = "termId") Integer termId,
-                                                  @RequestParam(name = "courseId") Integer courseId){
+                                                  @RequestParam(name = "classId") Integer classId){
 
-        List<TaskDTO> reportList = reportService.listNotSubmit(studentNumber, termId, courseId);
+        List<TaskDTO> reportList = reportService.listNotSubmit(studentNumber,classId);
         return CommonReturnType.okOf(reportList);
     }
 
@@ -169,4 +195,25 @@ public class ReportController {
         fileMap = reportService.upload(file, taskId, studentNumber, request, response);
         return  CommonReturnType.okOf(fileMap.get("path"));
     }
+
+    /**
+     * 下载实验报告
+     * @param taskId
+     * @param response
+     * @throws IOException
+     */
+    //打包下载
+    @GetMapping("/download")
+    @ResponseBody
+    public CommonReturnType download(@RequestParam("taskId")Integer taskId,HttpServletResponse response) {
+
+        boolean b = reportService.downloadZip(taskId, response);
+
+        System.out.println("下载成功");
+        return CommonReturnType.okOf(b);
+    }
+
+
+
+
 }

@@ -19,4 +19,26 @@ public class HelloController {
         model.addAttribute("name", name);
         return "hello";
     }
+
+    @GetMapping("/login2")
+    public String login2() {
+        return "login";
+    }
+    @GetMapping("/index2")
+    public String index() {
+        return "index";
+    }
+    @GetMapping("/score2")
+    public String score() {
+        return "score";
+    }
+    @GetMapping("/submitted2")
+    public String submitted() {
+        return "submitted";
+    }
+    @GetMapping("/uncommitted2")
+    public String uncommitted() {
+        return "uncommitted";
+    }
+
 }

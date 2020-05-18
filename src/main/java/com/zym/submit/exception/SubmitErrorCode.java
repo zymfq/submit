@@ -24,7 +24,13 @@ public enum SubmitErrorCode implements ISubmitErrorCode {
     FILE_SIZE_ERROR(3002,"上传文件内存过大！" ),
     FILE_NOT_FIND(3003,"未选择文件！"),
     FILE_IS_MISS(3004,"莫非文件不翼而飞？"),
-    ALL_REPORT_IS_SUBMIT(3005,"暂无未提交试验报告")
+    ALL_REPORT_IS_SUBMIT(3005,"暂无未提交试验报告"),
+    REPEATED_SUBMIT(3006,"请不要重复提交"),
+    DOWNLOAD_FAIL(3007,"实验报告下载失败"),
+
+    //400开头表示管理员信息不存在
+    ADMIN_MESSAGE_NOT_FIND(4001,"用户信息不存在"),
+    USER_MESSAGE_NOT_FIND(4000,"用户账户或密码错误")
     ;
 
     private Integer code;

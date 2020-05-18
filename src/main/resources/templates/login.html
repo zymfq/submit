@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <title>电子报告登陆</title>
+    <link href="../css/login.css" rel="stylesheet">
+    <link href="/css/layui.css" rel="stylesheet">
+    <link href="/css/index.css" rel="stylesheet">
+    <script src="/js/layui.js" charset="utf-8"></script>
+    <script src="/js/layui.all.js" charset="utf-8"></script>
+    <script src="/js/jquery-1.8.2.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript">
+        function login() {
+            return layui.use('layer', function () {
+                var layer = layui.layer;
+                var studentNumber = document.getElementById("number").value
+                var studentPassword = document.getElementById("studentPassword").value
+                // console.log("studentPassword"+studentPassword.val)
+                console.log(studentNumber)
+                console.log(studentPassword)
+
+                if (studentNumber == null || studentNumber == '') {
+                    layer.msg("学生账号不能为空");
+                    return false;
+                }
+                //密码校验
+                // var studentPassword = $("#studentPassword").val();
+                // console.log("password" + studentPassword)
+                if (studentPassword == null || studentPassword == '') {
+                    layer.msg("密码不能为空");
+                    return false;
+                }
+                console.log("-------------------------")
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/login",
+                    data: {
+                        "studentNumber": studentNumber,
+                        "studentPassword": studentPassword
+                    },
+
+                    success: function (data) {
+                        if (data.code == 0) {
+                            alert("登录成功");
+                            window.location.href = "../index2";
+                        } else {
+                            alert("登录失败，原因为" + data.message);
+                        }
+                    },
+                    error: function (data) {
+                        alert("登录失败，原因为" + data.responseText);
+                    }
+                });
+                return false;
+            })
+        }
+    </script>
+</head>
+<body>
+
+<div class="login">
+    <a class="login-name">电子报告系统</a>
+    <form  enctype="multipart/form-data">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名:</label>
+            <div class="layui-input-block">
+                <input type="text" id="number" name="studentNumber" lay-verify="title"
+                       placeholder="请输入你的用户名"
+                       class="layui-input" maxlength="15" width="10px">
+                <font color="red">*请输入用户名，最多15位</font>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码:</label>
+            <div class="layui-input-block">
+                <input type="password" id="studentPassword" name="studentPassword" placeholder="请输入密码"
+                       autocomplete="off"
+                       class="layui-input" size="10">
+            </div>
+        </div>
+        <!--<p><input class="login-button" type="submit" value="登录"/></p>-->
+        <!--<div ><input type="button" value="登陆"></div>-->
+        <!--<button class="login-button" type="submit">提交</button>-->
+        <button type="button" class="login-button" id="submit" onclick="login()">登录</button>
+    </form>
+</div>
+
+</body>
+</html>

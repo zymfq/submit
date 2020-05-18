@@ -6,10 +6,17 @@
 </head>
 <body>
 
-<!--/*@thymesVar id="name" type="templates"*/-->
-<form method="post" action="/upload" enctype="multipart/form-data">
+<!--@thymesVar id="name" type="templates" --><!--本地测试 -->
+<!--<form method="post" action="/uploadtest" enctype="multipart/form-data">-->
+<!--    <input type="file" name="file"><br>-->
+<!--    <input type="submit" value="提交">-->
+<!--</form>-->
+
+
+<form method="post" action="/upload2" enctype="multipart/form-data">
     <input type="file" name="file"><br>
     <input type="submit" value="提交">
 </form>
+
 </body>
 </html>

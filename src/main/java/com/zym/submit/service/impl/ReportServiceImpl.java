@@ -1,10 +1,13 @@
 package com.zym.submit.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.zym.submit.dto.DownloadReportDTO;
 import com.zym.submit.dto.ReportDTO;
+import com.zym.submit.dto.StudentSubmissionDTO;
 import com.zym.submit.dto.TaskDTO;
-import com.zym.submit.entity.*;
 import com.zym.submit.entity.Class;
+import com.zym.submit.entity.*;
 import com.zym.submit.entity.entityExample.ReportExample;
 import com.zym.submit.entity.entityExample.TaskNoticeExample;
 import com.zym.submit.entity.entityExample.TeacherExample;
@@ -13,9 +16,11 @@ import com.zym.submit.exception.SubmitErrorCode;
 import com.zym.submit.exception.SubmitException;
 import com.zym.submit.mapper.*;
 import com.zym.submit.service.ReportService;
+import com.zym.submit.utils.DownloadZipUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,9 +49,6 @@ public class ReportServiceImpl implements ReportService {
     private ReportExtMapper reportExtMapper;
 
     @Autowired
-    private TaskNoticeExtMapper taskNoticeExtMapper;
-
-    @Autowired
     private TaskNoticeMapper taskNoticeMapper;
 
     @Autowired
@@ -58,35 +60,61 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     private ClassMapper classMapper;
 
+    @Autowired
+    private StudentExtMapper studentExtMapper;
+
+    @Autowired
+    private TaskNoticeExtMapper taskNoticeExtMapper;
+
+    @Autowired
+    //   private RedisTemplate<Object, Object> redisTemplate;
+    private RedisTemplate<Object, Object> JsonRedisTemplate;
 
     @Override
     public List<ReportDTO> listReport(String studentNumber, Integer pageNum, Integer pageSize) {
 
-        ReportExample reportExample = new ReportExample();
-        reportExample.createCriteria().andStudentNumberEqualTo(studentNumber);
-        reportExample.setOrderByClause("create_time desc");
+        //字符串的序列化器
+//        RedisSerializer redisSerializer = new StringRedisSerializer();
+//        JsonRedisTemplate.setKeySerializer(redisSerializer);
 
-        PageHelper.startPage(pageNum, pageSize);
-        List<Report> reportList = reportMapper.selectByExample(reportExample);
+        List<ReportDTO> reports = (List<ReportDTO>) JsonRedisTemplate.opsForValue().get(studentNumber + pageNum);
 
-        if (reportList.size() == 0) {
-            return new ArrayList<>();
+        if (reports == null) {
+            System.out.println("查询的数据库.............");
+            ReportExample reportExample = new ReportExample();
+            reportExample.createCriteria().andStudentNumberEqualTo(studentNumber);
+            reportExample.setOrderByClause("create_time desc");
+
+            PageHelper.startPage(pageNum, pageSize);
+            List<Report> reportList = reportMapper.selectByExample(reportExample);
+            if (reportList.size() == 0) {
+                return new ArrayList<>();
+            }
+            List<ReportDTO> reportDTOList = new ArrayList<>();
+
+
+            for (Report report : reportList) {
+                ReportDTO reportDTO = new ReportDTO();
+                BeanUtils.copyProperties(report, reportDTO);
+
+                TaskNotice taskNotice = taskNoticeMapper.selectByPrimaryKey(report.getTaskId());
+
+                String teacherName = teacherMapper.selectByTeacherNumber(taskNotice.getTeacherNumber());
+                Course course = courseMapper.selectByPrimaryKey(taskNotice.getCourseId());
+                reportDTO.setCourseName(course.getCourseName());
+                reportDTO.setTeacherName(teacherName);
+                reportDTOList.add(reportDTO);
+            }
+            //String value = JSON.toJSONString(reportDTOList);
+            JsonRedisTemplate.opsForValue().set(studentNumber + pageNum, reportDTOList);
+            //reports.addAll(reportDTOList);
+            reports = reportDTOList.stream().map(e -> JSON.
+                    parseObject(JSON.toJSONString(e), ReportDTO.class)
+            ).collect(Collectors.toList());
+        } else {
+            System.out.println("查询的缓存111111111111");
         }
-        List<ReportDTO> reportDTOList = new ArrayList<>();
-
-        for (Report report : reportList) {
-            ReportDTO reportDTO = new ReportDTO();
-            BeanUtils.copyProperties(report, reportDTO);
-
-            TaskNotice taskNotice = taskNoticeExtMapper.selectByTaskId(report.getTaskId());
-
-            String teacherName = teacherMapper.selectByTeacherNumber(taskNotice.getTeacherNumber());
-            Course course = courseMapper.selectByPrimaryKey(taskNotice.getCourseId());
-            reportDTO.setCourseName(course.getCourseName());
-            reportDTO.setTeacherName(teacherName);
-            reportDTOList.add(reportDTO);
-        }
-        return reportDTOList;
+        return reports;
     }
 
 
@@ -104,7 +132,6 @@ public class ReportServiceImpl implements ReportService {
         List<String> teacherNumList = new ArrayList<>();
 
         for (TaskNotice taskNotice : taskNotices) {
-
             list.add(taskNotice.getTaskId());
             String teacherNumber = taskNotice.getTeacherNumber();
             String name = teacherMapper.selectByTeacherNumber(teacherNumber);
@@ -140,6 +167,15 @@ public class ReportServiceImpl implements ReportService {
         return result;
     }
 
+    /**
+     * 查看全部未提交实验报告
+     * @param studentNumber
+     * @param termId
+     * @param classId
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @Override
     public List<TaskDTO> listAllNotSubmit(String studentNumber, Integer termId, Integer classId, Integer pageNum,
                                           Integer pageSize) {
@@ -172,31 +208,70 @@ public class ReportServiceImpl implements ReportService {
         return taskDTOList;
     }
 
+    /**
+     * 用hashMap实现
+     *
+     * @param studentNumber
+     * @param classId
+     * @return
+     */
     @Override
-    public List<TaskDTO> listNotSubmit(String studentNumber, Integer termId, Integer courseId) {
+    public List<TaskDTO> listNotSubmit(String studentNumber, Integer classId) {
 
-        this.checkTerm_Course(termId, courseId);
-        List<TaskNotice> taskNoticeList = reportExtMapper.selectNotSubmit(studentNumber, termId, courseId);
+        TaskNoticeExample taskNoticeExample = new TaskNoticeExample();
+        taskNoticeExample.createCriteria().andClassIdEqualTo(classId);
+        List<TaskNotice> taskNoticeList = taskNoticeMapper.selectByExample(taskNoticeExample);
 
-        Course course = courseMapper.selectByPrimaryKey(courseId);
+        ReportExample reportExample = new ReportExample();
+        reportExample.createCriteria().andStudentNumberEqualTo(studentNumber);
+        List<Report> reportList = reportMapper.selectByExample(reportExample);
 
-        List<TaskDTO> taskDTOList = taskNoticeList.stream().map(taskNotice -> {
-            TaskDTO taskDTO = new TaskDTO();
+        Map<Integer, String> taskNoticeMap = new HashMap<>();
+        for (TaskNotice taskNotice : taskNoticeList) {
+            taskNoticeMap.put(taskNotice.getTaskId(), taskNotice.getTaskName());
+        }
+
+        for (Report report : reportList) {
+            if (taskNoticeMap.containsKey(report.getTaskId())) {
+                taskNoticeMap.remove(report.getTaskId());
+            }
+        }
+
+        TaskDTO taskDTO = new TaskDTO();
+        List<TaskDTO> taskDTOList = new ArrayList<>();
+        for (Map.Entry<Integer, String> entry : taskNoticeMap.entrySet()) {
+
+            TaskNotice taskNotice = taskNoticeMapper.selectByPrimaryKey(entry.getKey());
             BeanUtils.copyProperties(taskNotice, taskDTO);
+
+            Course course = courseMapper.selectByPrimaryKey(taskNotice.getCourseId());
             taskDTO.setCourseName(course.getCourseName());
-            return taskDTO;
-        }).collect(Collectors.toList());
+
+            String teacherNumber = teacherMapper.selectByTeacherNumber(taskNotice.getTeacherNumber());
+            taskDTO.setTeacherName(teacherNumber);
+
+            Term term = termMapper.selectByPrimaryKey(taskNotice.getTermId());
+            taskDTO.setStudyYear(term.getStudyYear());
+            taskDTO.setTermName(TermTypeEnum.nameOfType(term.getTermId()));
+            taskDTOList.add(taskDTO);
+        }
 
         return taskDTOList;
     }
 
+    /**
+     * 实验报告撤回功能
+     *
+     * @param taskId
+     * @return
+     */
     @Override
     public int rollBackReport(Integer taskId) {
 
         ReportExample reportExample = new ReportExample();
         reportExample.createCriteria().andTaskIdEqualTo(Collections.singletonList(taskId));
 
-        TaskNotice taskNotice = taskNoticeExtMapper.selectByTaskId(taskId);
+        TaskNotice taskNotice = taskNoticeMapper.selectByPrimaryKey(taskId);
 
         if (taskNotice == null) {
             throw new SubmitException(SubmitErrorCode.FILE_IS_MISS);
@@ -213,6 +288,16 @@ public class ReportServiceImpl implements ReportService {
         return effectNumber;
     }
 
+    /**
+     * 实验报告上传功能
+     *
+     * @param myFiles
+     * @param taskId
+     * @param studentNumber
+     * @param request
+     * @param response
+     * @return
+     */
     @Override
     public Map<String, Object> upload(MultipartFile myFiles, Integer taskId, String studentNumber,
                                       HttpServletRequest request, HttpServletResponse response) {
@@ -221,6 +306,13 @@ public class ReportServiceImpl implements ReportService {
 
         if (myFiles.isEmpty()) {
             throw new SubmitException(SubmitErrorCode.FILE_NOT_FIND);
+        }
+
+        ReportExample reportExample = new ReportExample();
+        reportExample.createCriteria().andStudentNumberEqualTo(studentNumber).andTaskIdEqualTo(Collections.singletonList(taskId));
+        List<Report> reportList = reportMapper.selectByExample(reportExample);
+        if (reportList.size() != 0) {
+            throw new SubmitException(SubmitErrorCode.REPEATED_SUBMIT);
         }
 
         String Filename = myFiles.getOriginalFilename();
@@ -242,9 +334,14 @@ public class ReportServiceImpl implements ReportService {
 
         String path = request.getContextPath();
         String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path;
+//        File realPath = new File("F://Test//uploadFiles/");
+//        if(!realPath.exists()  && !realPath.isDirectory()){
+//            realPath.mkdir();
+//        }
         String realPath = "F://Test//uploadFiles/";
 
         try {
+
             FileUtils.copyInputStreamToFile(myFiles.getInputStream(), new File(realPath, Filename));
             resMap.put("code", "200");
             resMap.put("msg", "上传成功");
@@ -255,9 +352,9 @@ public class ReportServiceImpl implements ReportService {
             resMap.put("path", endPath);
             System.out.println(resMap.get("path").toString());
 
-            //将上传文件的URL插入数据库
+            //将上传文件信息插入数据库
             Report report = new Report();
-            TaskNotice taskNotice = taskNoticeExtMapper.selectByTaskId(taskId);
+            TaskNotice taskNotice = taskNoticeMapper.selectByPrimaryKey(taskId);
             BeanUtils.copyProperties(taskNotice, report);
             report.setStudentNumber(studentNumber);
             report.setReportName(taskNotice.getTaskName());
@@ -274,6 +371,55 @@ public class ReportServiceImpl implements ReportService {
         }
         return resMap;
     }
+
+    /**
+     * 实验报告下载功能
+     * @param taskId
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @Override
+    public boolean downloadZip(Integer taskId, HttpServletResponse response) {
+        //获取下载文件的URL
+        List<StudentSubmissionDTO> list = studentExtMapper.SubmittedStudentInfo(taskId);
+        //根据URL得到文件的绝对路径
+        List<String> filePaths = new ArrayList<String>();
+        for (StudentSubmissionDTO a : list) {
+            String url = a.getReportPath();
+            //1.得到文件名
+            String wordName = url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
+            //2.得到文件后缀名
+            String suffix = url.substring(url.lastIndexOf(".") + 1);
+            //3.得到文件绝对路径
+            String pathName = null;
+            if (suffix.equals("doc")) {
+                pathName = "F://Test//uploadFiles/" + wordName + ".doc";
+            } else {
+                pathName = "F://Test//uploadFiles/" + wordName + ".docx";
+            }
+
+            filePaths.add(pathName);
+
+        }
+        //创建压缩文件需要的空的zip包
+        String zipBasePath = "F://Test//DownloadZip/";
+        //得到下载的zip文件名（学年+学期+年级+班级+课程+实验名称）
+        DownloadReportDTO dDTO = taskNoticeExtMapper.getZipName(taskId);
+
+        String zipName = dDTO.getStudyYear() + "学年" + dDTO.getTermName() + "_" +
+                dDTO.getGradeName() + dDTO.getClassName() + "_" + dDTO.getCourseName() + "_" +
+                dDTO.getTaskName()+ ".zip";
+        DownloadZipUtils utils = new DownloadZipUtils();
+        try {
+            utils.downloadZip(zipBasePath, zipName, filePaths, response);
+        } catch (IOException e) {
+            throw new SubmitException(SubmitErrorCode.DOWNLOAD_FAIL);
+        }
+        return true;
+
+    }
+
 
     public void checkTerm_Class(Integer termId, Integer classId) {
 

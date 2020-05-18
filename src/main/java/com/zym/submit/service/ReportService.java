@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +15,6 @@ import java.util.Map;
  * @date 2019-09-08-20:43
  */
 public interface ReportService {
-
-    Map<String, Object> upload(MultipartFile myFiles, Integer taskId, String studentNumber,
-                               HttpServletRequest request, HttpServletResponse response);
 
     /**
      * 查询所有试验报告
@@ -49,11 +47,10 @@ public interface ReportService {
      * 根据学期课程查询未提交的实验报告
      *
      * @param studentNumber
-     * @param termId
-     * @param courseId
+     * @param classId
      * @return
      */
-    List<TaskDTO> listNotSubmit(String studentNumber, Integer termId, Integer courseId);
+    List<TaskDTO> listNotSubmit(String studentNumber,Integer classId);
 
 
     /**
@@ -62,5 +59,25 @@ public interface ReportService {
      * @return
      */
     int rollBackReport(Integer taskId);
+
+    /**
+     * 上传实验报告
+     * @param myFiles
+     * @param taskId
+     * @param studentNumber
+     * @param request
+     * @param response
+     * @return
+     */
+    Map<String, Object> upload(MultipartFile myFiles, Integer taskId, String studentNumber,
+                               HttpServletRequest request, HttpServletResponse response);
+
+    /**
+     * 下载实验报告
+     * @param taskId
+     * @param response
+     * @return
+     */
+     boolean downloadZip(Integer taskId, HttpServletResponse response);
 
 }

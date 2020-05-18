@@ -6,10 +6,7 @@ import com.zym.submit.exception.SubmitException;
 import com.zym.submit.response.CommonReturnType;
 import com.zym.submit.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2019-09-08-14:31
  */
 @RestController
+//@CrossOrigin(allowCredentials = "true",allowedHeaders = "*")
 public class StudentController {
 
     @Autowired
@@ -35,7 +33,6 @@ public class StudentController {
     public CommonReturnType login(@RequestParam(name = "studentNumber") String studentNumber,
                                   @RequestParam(name = "studentPassword") String studentPassword,
                                   HttpServletRequest request){
-
         //校验登录参数是否合法
         if(StringUtils.isEmpty(studentNumber) || StringUtils.isEmpty(studentPassword)){
             throw new SubmitException(SubmitErrorCode.PARAMETER_VALIDATION_ERROR);
@@ -73,5 +70,9 @@ public class StudentController {
         StudentDTO studentDTO = studentService.updatePassword(studentNumber, studentPassword);
         return CommonReturnType.okOf(studentDTO);
     }
+
+
+
+
 
 }

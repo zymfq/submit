@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>电子报告系统</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/layui.css">
+
+</head>
+<body class="layui-layout-body">
+
+<div class="layui-layout layui-layout-admin">
+    <!--头部状态栏-->
+    <div class="layui-header">
+        <div class="layui-logo">210实验室</div>
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    刘军
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="name5">修改资料</a></dd>
+                    <dd><a href="login.html">切换用户</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">退出</a></li>
+        </ul>
+    </div>
+
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域-->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">我的实验报告</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="#">已提交</a></dd>
+                        <dd><a href="/submitted2">未提交</a></dd>
+                        <!--<dd><a href="">草稿箱</a></dd>-->
+                        <!--<dd><a href="">通知</a></dd>-->
+                    </dl>
+                </li>
+
+                <!--<li class="layui-nav-item"><a href="#name3">草稿箱</a></li>-->
+                <li class="layui-nav-item"><a href="#name4">老师评分</a></li>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="layui-body">
+         <!--&lt;!&ndash;内容主体区域 &ndash;&gt;-->
+
+        <!--&lt;!&ndash;已提交页面&ndash;&gt;-->
+        <!--<iframe class="body_iframe" id="name1" width="100%" height="99%" src="/submitted2"></iframe>-->
+        <!--&lt;!&ndash;未提交页面&ndash;&gt;-->
+        <!--<iframe class="body_iframe" id="name2" width="100%" height="99%" src="/uncommitted2"></iframe>-->
+        <!--&lt;!&ndash;草稿箱页面&ndash;&gt;-->
+        <!--&lt;!&ndash;<iframe class="body_iframe" id="name3" width="100%" height="99%" src="score.html"></iframe>&ndash;&gt;-->
+        <!--&lt;!&ndash;老师评分页面&ndash;&gt;-->
+        <!--<iframe class="body_iframe" id="name4" width="100%" height="99%" src="/score2"></iframe>-->
+        <!--&lt;!&ndash;修改资料页面&ndash;&gt;-->
+        <!--<iframe class="body_iframe" id="name5" width="100%" height="99%" src="/amend"></iframe>-->
+        <table class="layui-hide" id="test"></table>
+
+
+    </div>
+</div>
+
+
+<script src="js/layui.js" charset="utf-8"></script>
+<script src="js/layui.all.js" charset="utf-8"></script>
+<script>
+    //JavaScript代码区域
+    layui.use('element', function(){
+        var element = layui.element;
+
+    });
+
+</script>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+
+        table.render({
+            elem: '#test'
+            ,url:'../list'
+            ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            ,cols: [
+                [
+                 {field:'taskId', width:80, title: 'ID', sort: true}
+                ,{field:'reportName', width:80, title: '實驗名稱'}
+                ,{field:'courseName', width:80, title: '課程', sort: true}
+                ,{field:'teacherName', width:80, title: '老師'}
+                ,{field:'reportCorrect', title: '是否打分', width: '30%', minWidth: 100}
+                ,{field:'taskGrade', title: '分数', width: '30%', minWidth: 100}
+                //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                ,{field:'creatTime', title: '創建時間', sort: true}
+            ]
+            ],
+            page: true
+        });
+    });
+</script>
+</body>
+</html>
