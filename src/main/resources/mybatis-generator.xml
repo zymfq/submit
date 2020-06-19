@@ -21,6 +21,7 @@
             <property name="suppressAllComments" value="true" />
         </commentGenerator>
 
+<!--果插件连接失败就换成jdbc:mysql://127.0.0.1:3306/experimental_report  ，或者换成localhost    -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
                         connectionURL="jdbc:mysql://127.0.0.1:3306/experimental_report?characterEncoding=utf8&amp;useSSL=true&amp;serverTimezone=UTC"
                         userId="root"
@@ -66,6 +67,6 @@
         <table  tableName="teacher" domainObjectName="Teacher" ></table>
         <table  tableName="term" domainObjectName="Term" ></table>
         <table  tableName="student" domainObjectName="Student" ></table>-->
-        <table  tableName="task_notice" domainObjectName="TaskNotice" ></table>
+<!--        <table  tableName="task_notice" domainObjectName="TaskNotice" ></table>-->
     </context>
 </generatorConfiguration>
